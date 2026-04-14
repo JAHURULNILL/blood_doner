@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 36 33% 98%;
+  --foreground: 216 28% 16%;
+  --muted: 210 24% 95%;
+  --muted-foreground: 215 13% 42%;
+  --border: 214 20% 88%;
+  --input: 214 20% 90%;
+  --ring: 357 68% 42%;
+  --card: 0 0% 100%;
+  --card-foreground: 216 28% 16%;
+  --primary: 357 68% 42%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 30% 96%;
+  --secondary-foreground: 216 28% 16%;
+  --accent: 40 36% 95%;
+  --accent-foreground: 216 28% 20%;
+  --success: 145 35% 36%;
+  --success-foreground: 0 0% 100%;
+  --warning: 28 82% 56%;
+  --warning-foreground: 0 0% 100%;
+}
+
+* {
+  @apply border-border;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-background font-bengali text-foreground antialiased;
+  background-image: radial-gradient(circle at top, rgba(127, 29, 29, 0.04), transparent 30%);
+}
+
+a {
+  @apply transition-colors duration-200;
+}
+
+::selection {
+  @apply bg-primary/15 text-foreground;
+}
+
+.container-shell {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+.panel {
+  @apply rounded-3xl border bg-card shadow-soft;
+}
+
+.panel-muted {
+  @apply rounded-3xl border border-border/70 bg-white/75 backdrop-blur;
+}
+
+.surface {
+  @apply bg-white/75 backdrop-blur;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.bg-grid-fade {
+  background-size: 34px 34px;
+}
