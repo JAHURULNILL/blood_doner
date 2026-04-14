@@ -1,4 +1,6 @@
+import { unstable_cache } from "next/cache";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createPublicSupabaseClient } from "@/lib/supabase/public";
 import {
   demoBloodBanks,
   demoBlogs,
@@ -25,64 +27,72 @@ function includesSafe(value: string, query?: string) {
   return value.toLowerCase().includes(query.toLowerCase());
 }
 
-export async function getHomeData() {
-  const supabase = await createServerSupabaseClient();
+const getCachedHomeData = unstable_cache(
+  async () => {
+    const supabase = createPublicSupabaseClient();
 
-  if (supabase) {
-    const [
-      { data: donors },
-      { data: requests },
-      { data: campaigns },
-      { data: blogs },
-      { count: totalUsers },
-      { count: totalDonors },
-      { count: activeRequests },
-      { count: fulfilledRequests },
-      { count: bloodBankCount },
-      { count: blogCount },
-      { count: campaignCount }
-    ] = await Promise.all([
-      supabase.from("donor_profiles").select("*").eq("is_verified", true).order("created_at", { ascending: false }).limit(3),
-      supabase.from("blood_requests").select("*").in("status", ["Open", "In progress"]).order("created_at", { ascending: false }).limit(3),
-      supabase.from("campaigns").select("*").order("event_date", { ascending: true }).limit(2),
-      supabase.from("blogs").select("*").order("published_at", { ascending: false }).limit(3),
-      supabase.from("users").select("*", { count: "exact", head: true }),
-      supabase.from("donor_profiles").select("*", { count: "exact", head: true }),
-      supabase.from("blood_requests").select("*", { count: "exact", head: true }).in("status", ["Open", "In progress"]),
-      supabase.from("blood_requests").select("*", { count: "exact", head: true }).eq("status", "Fulfilled"),
-      supabase.from("blood_banks").select("*", { count: "exact", head: true }),
-      supabase.from("blogs").select("*", { count: "exact", head: true }),
-      supabase.from("campaigns").select("*", { count: "exact", head: true })
-    ]);
+    if (supabase) {
+      const [
+        { data: donors },
+        { data: requests },
+        { data: campaigns },
+        { data: blogs },
+        { count: totalUsers },
+        { count: totalDonors },
+        { count: activeRequests },
+        { count: fulfilledRequests },
+        { count: bloodBankCount },
+        { count: blogCount },
+        { count: campaignCount }
+      ] = await Promise.all([
+        supabase.from("donor_profiles").select("*").eq("is_verified", true).order("created_at", { ascending: false }).limit(3),
+        supabase.from("blood_requests").select("*").in("status", ["Open", "In progress"]).order("created_at", { ascending: false }).limit(3),
+        supabase.from("campaigns").select("*").order("event_date", { ascending: true }).limit(2),
+        supabase.from("blogs").select("*").order("published_at", { ascending: false }).limit(3),
+        supabase.from("users").select("*", { count: "exact", head: true }),
+        supabase.from("donor_profiles").select("*", { count: "exact", head: true }),
+        supabase.from("blood_requests").select("*", { count: "exact", head: true }).in("status", ["Open", "In progress"]),
+        supabase.from("blood_requests").select("*", { count: "exact", head: true }).eq("status", "Fulfilled"),
+        supabase.from("blood_banks").select("*", { count: "exact", head: true }),
+        supabase.from("blogs").select("*", { count: "exact", head: true }),
+        supabase.from("campaigns").select("*", { count: "exact", head: true })
+      ]);
+
+      return {
+        donors: (donors ?? []) as DonorProfile[],
+        requests: (requests ?? []) as BloodRequest[],
+        campaigns: (campaigns ?? []) as Campaign[],
+        blogs: (blogs ?? []) as BlogPost[],
+        stats: {
+          totalUsers: totalUsers ?? 0,
+          totalDonors: totalDonors ?? 0,
+          activeRequests: activeRequests ?? 0,
+          fulfilledRequests: fulfilledRequests ?? 0,
+          bloodBankCount: bloodBankCount ?? 0,
+          blogCount: blogCount ?? 0,
+          campaignCount: campaignCount ?? 0
+        } satisfies DashboardSummary
+      };
+    }
 
     return {
-      donors: (donors ?? []) as DonorProfile[],
-      requests: (requests ?? []) as BloodRequest[],
-      campaigns: (campaigns ?? []) as Campaign[],
-      blogs: (blogs ?? []) as BlogPost[],
-      stats: {
-        totalUsers: totalUsers ?? 0,
-        totalDonors: totalDonors ?? 0,
-        activeRequests: activeRequests ?? 0,
-        fulfilledRequests: fulfilledRequests ?? 0,
-        bloodBankCount: bloodBankCount ?? 0,
-        blogCount: blogCount ?? 0,
-        campaignCount: campaignCount ?? 0
-      } satisfies DashboardSummary
+      donors: demoDonors.slice(0, 3),
+      requests: demoRequests.slice(0, 3),
+      campaigns: demoCampaigns.slice(0, 2),
+      blogs: demoBlogs.slice(0, 3),
+      stats: demoDashboardSummary
     };
-  }
+  },
+  ["home-data"],
+  { revalidate: 300 }
+);
 
-  return {
-    donors: demoDonors.slice(0, 3),
-    requests: demoRequests.slice(0, 3),
-    campaigns: demoCampaigns.slice(0, 2),
-    blogs: demoBlogs.slice(0, 3),
-    stats: demoDashboardSummary
-  };
+export async function getHomeData() {
+  return getCachedHomeData();
 }
 
 export async function getDonors(filters?: Record<string, string | undefined>) {
-  const supabase = await createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
   if (supabase) {
     let query = supabase.from("donor_profiles").select("*").order("created_at", { ascending: false });
     if (filters?.bloodGroup) query = query.eq("blood_group", filters.bloodGroup);
@@ -107,7 +117,7 @@ export async function getDonors(filters?: Record<string, string | undefined>) {
 }
 
 export async function getDonorById(id: string) {
-  const supabase = await createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
   if (supabase) {
     const { data } = await supabase.from("donor_profiles").select("*").eq("id", id).single();
     if (data) return data as DonorProfile;
@@ -116,7 +126,7 @@ export async function getDonorById(id: string) {
 }
 
 export async function getBloodRequests(filters?: Record<string, string | undefined>) {
-  const supabase = await createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
   if (supabase) {
     let query = supabase.from("blood_requests").select("*").order("created_at", { ascending: false });
     if (filters?.bloodGroup) query = query.eq("blood_group", filters.bloodGroup);
@@ -139,7 +149,7 @@ export async function getBloodRequests(filters?: Record<string, string | undefin
 }
 
 export async function getRequestById(id: string) {
-  const supabase = await createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
   if (supabase) {
     const { data } = await supabase.from("blood_requests").select("*").eq("id", id).single();
     if (data) return data as BloodRequest;
@@ -148,7 +158,7 @@ export async function getRequestById(id: string) {
 }
 
 export async function getBloodBanks(filters?: Record<string, string | undefined>) {
-  const supabase = await createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
   if (supabase) {
     let query = supabase.from("blood_banks").select("*").order("name");
     if (filters?.division) query = query.ilike("division", `%${filters.division}%`);
@@ -171,7 +181,7 @@ export async function getBloodBanks(filters?: Record<string, string | undefined>
 }
 
 export async function getBlogs() {
-  const supabase = await createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
   if (supabase) {
     const { data } = await supabase.from("blogs").select("*").order("published_at", { ascending: false });
     if (data) return data as BlogPost[];
@@ -180,7 +190,7 @@ export async function getBlogs() {
 }
 
 export async function getBlogBySlug(slug: string) {
-  const supabase = await createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
   if (supabase) {
     const { data } = await supabase.from("blogs").select("*").eq("slug", slug).single();
     if (data) return data as BlogPost;
@@ -189,7 +199,7 @@ export async function getBlogBySlug(slug: string) {
 }
 
 export async function getCampaigns() {
-  const supabase = await createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
   if (supabase) {
     const { data } = await supabase.from("campaigns").select("*").order("event_date", { ascending: true });
     if (data) return data as Campaign[];
@@ -198,7 +208,7 @@ export async function getCampaigns() {
 }
 
 export async function getCampaignBySlug(slug: string) {
-  const supabase = await createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
   if (supabase) {
     const { data } = await supabase.from("campaigns").select("*").eq("slug", slug).single();
     if (data) return data as Campaign;

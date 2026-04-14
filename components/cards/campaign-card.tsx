@@ -9,14 +9,15 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export function CampaignCard({ campaign }: { campaign: Campaign }) {
   return (
-    <Card className="border-border/70">
+    <Card className="overflow-hidden border-border/70 bg-white/90 shadow-soft transition-transform duration-200 hover:-translate-y-1">
       <div className="relative h-56 overflow-hidden">
         <Image
           src={campaign.banner_image_url ?? "https://placehold.co/1200x700"}
           alt={campaign.title}
           fill
-          className="object-cover"
+          className="object-cover transition-transform duration-500 hover:scale-[1.03]"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-transparent" />
       </div>
       <CardContent className="space-y-4 p-6">
         <div className="flex flex-wrap items-center gap-2">
@@ -38,7 +39,9 @@ export function CampaignCard({ campaign }: { campaign: Campaign }) {
           </div>
         </div>
         <Button variant="outline" asChild>
-          <Link href={`/campaigns/${campaign.slug}`}>বিস্তারিত</Link>
+          <Link href={`/campaigns/${campaign.slug}`} prefetch>
+            বিস্তারিত
+          </Link>
         </Button>
       </CardContent>
     </Card>

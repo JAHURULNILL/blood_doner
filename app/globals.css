@@ -3,22 +3,22 @@
 @tailwind utilities;
 
 :root {
-  --background: 36 33% 98%;
-  --foreground: 216 28% 16%;
-  --muted: 210 24% 95%;
-  --muted-foreground: 215 13% 42%;
-  --border: 214 20% 88%;
-  --input: 214 20% 90%;
-  --ring: 357 68% 42%;
+  --background: 36 25% 97%;
+  --foreground: 220 22% 14%;
+  --muted: 220 23% 95%;
+  --muted-foreground: 218 12% 39%;
+  --border: 220 16% 87%;
+  --input: 220 18% 89%;
+  --ring: 356 62% 40%;
   --card: 0 0% 100%;
-  --card-foreground: 216 28% 16%;
-  --primary: 357 68% 42%;
+  --card-foreground: 220 22% 14%;
+  --primary: 356 62% 40%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 210 30% 96%;
-  --secondary-foreground: 216 28% 16%;
-  --accent: 40 36% 95%;
-  --accent-foreground: 216 28% 20%;
-  --success: 145 35% 36%;
+  --secondary: 210 26% 95%;
+  --secondary-foreground: 220 22% 14%;
+  --accent: 36 28% 94%;
+  --accent-foreground: 220 22% 17%;
+  --success: 146 34% 34%;
   --success-foreground: 0 0% 100%;
   --warning: 28 82% 56%;
   --warning-foreground: 0 0% 100%;
@@ -35,8 +35,9 @@ html {
 body {
   @apply bg-background font-bengali text-foreground antialiased;
   background-image:
-    radial-gradient(circle at top, rgba(127, 29, 29, 0.045), transparent 30%),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.84), rgba(248, 250, 252, 0.9));
+    radial-gradient(circle at top, rgba(127, 29, 29, 0.045), transparent 24%),
+    radial-gradient(circle at right top, rgba(148, 163, 184, 0.12), transparent 26%),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.92), rgba(247, 248, 250, 0.94));
 }
 
 a {
@@ -52,21 +53,21 @@ a {
 }
 
 .panel {
-  @apply rounded-3xl border bg-card shadow-soft;
+  @apply rounded-[2rem] border bg-card shadow-soft;
 }
 
 .panel-muted {
-  @apply rounded-3xl border border-border/70 bg-white/75 backdrop-blur;
+  @apply rounded-[2rem] border border-border/70 bg-white/80 backdrop-blur;
 }
 
 .surface {
-  @apply bg-white/75 backdrop-blur;
+  @apply bg-white/80 backdrop-blur;
 }
 
 .page-backdrop {
   background-image:
-    radial-gradient(circle at top right, rgba(127, 29, 29, 0.06), transparent 22%),
-    radial-gradient(circle at top left, rgba(148, 163, 184, 0.14), transparent 24%);
+    radial-gradient(circle at top right, rgba(127, 29, 29, 0.06), transparent 18%),
+    radial-gradient(circle at top left, rgba(148, 163, 184, 0.12), transparent 22%);
 }
 
 .text-balance {
@@ -87,5 +88,19 @@ a {
 .soft-ring {
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.8),
-    0 20px 45px -24px rgba(15, 23, 42, 0.16);
+    0 24px 54px -30px rgba(15, 23, 42, 0.18);
+}
+
+.section-divider {
+  @apply border-t border-border/60;
+}
+
+.premium-card {
+  @apply rounded-[2rem] border border-border/70 bg-white/85 shadow-soft backdrop-blur;
+}
+
+.hero-glow {
+  background-image:
+    radial-gradient(circle at top left, rgba(127, 29, 29, 0.1), transparent 26%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.9));
 }

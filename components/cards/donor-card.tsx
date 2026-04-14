@@ -16,12 +16,12 @@ export function DonorCard({ donor, revealPhone = false }: DonorCardProps) {
   const availability = getAvailabilityFromLastDonation(donor.last_donated_at);
 
   return (
-    <Card className="border-border/70">
+    <Card className="border-border/70 bg-white/90 shadow-soft transition-transform duration-200 hover:-translate-y-1">
       <CardContent className="space-y-5 p-6">
         <div className="flex items-start gap-4">
-          <Avatar className="h-14 w-14 rounded-2xl">
+          <Avatar className="h-14 w-14 rounded-[1.2rem] ring-1 ring-border/70">
             <AvatarImage src={donor.profile_photo_url ?? ""} alt={donor.full_name} />
-            <AvatarFallback className="rounded-2xl">{donor.full_name.slice(0, 1)}</AvatarFallback>
+            <AvatarFallback className="rounded-[1.2rem]">{donor.full_name.slice(0, 1)}</AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1 space-y-2">
             <div className="flex flex-wrap items-center gap-2">
@@ -47,7 +47,7 @@ export function DonorCard({ donor, revealPhone = false }: DonorCardProps) {
           </div>
         </div>
 
-        <div className="grid gap-3 rounded-2xl bg-secondary/60 p-4 text-sm sm:grid-cols-2">
+        <div className="grid gap-3 rounded-[1.5rem] bg-secondary/55 p-4 text-sm sm:grid-cols-2">
           <div>
             <p className="text-muted-foreground">সর্বশেষ রক্তদান</p>
             <p className="mt-1 font-medium">{formatDate(donor.last_donated_at)}</p>
@@ -70,9 +70,11 @@ export function DonorCard({ donor, revealPhone = false }: DonorCardProps) {
         </div>
 
         <div className="flex items-center justify-between gap-4">
-          <p className="line-clamp-2 text-sm leading-7 text-muted-foreground">{donor.bio}</p>
+          <p className="line-clamp-2 flex-1 text-sm leading-7 text-muted-foreground">{donor.bio}</p>
           <Button variant="outline" asChild>
-            <Link href={`/donors/${donor.id}`}>প্রোফাইল দেখুন</Link>
+            <Link href={`/donors/${donor.id}`} prefetch>
+              প্রোফাইল দেখুন
+            </Link>
           </Button>
         </div>
       </CardContent>

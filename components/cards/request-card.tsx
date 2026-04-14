@@ -14,25 +14,21 @@ function urgencyVariant(urgency: BloodRequest["urgency"]) {
 
 export function BloodRequestCard({ request }: { request: BloodRequest }) {
   return (
-    <Card className="border-border/70">
+    <Card className="border-border/70 bg-white/90 shadow-soft transition-transform duration-200 hover:-translate-y-1">
       <CardContent className="space-y-5 p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="danger">{request.blood_group}</Badge>
               <Badge variant={urgencyVariant(request.urgency)}>
-                {request.urgency === "Emergency"
-                  ? "জরুরি"
-                  : request.urgency === "Urgent"
-                    ? "অতি দ্রুত"
-                    : "স্বাভাবিক"}
+                {request.urgency === "Emergency" ? "জরুরি" : request.urgency === "Urgent" ? "অতি দ্রুত" : "স্বাভাবিক"}
               </Badge>
               <Badge variant="outline">{request.status}</Badge>
             </div>
             <h3 className="font-display text-xl font-semibold">{request.patient_name}</h3>
             <p className="text-sm leading-7 text-muted-foreground">{request.details}</p>
           </div>
-          <div className="rounded-2xl bg-secondary/60 px-4 py-3 text-right">
+          <div className="rounded-[1.5rem] bg-secondary/60 px-4 py-3 text-right">
             <p className="text-xs text-muted-foreground">প্রয়োজন</p>
             <p className="font-display text-2xl font-semibold">{request.quantity_bags} ব্যাগ</p>
           </div>
@@ -66,7 +62,9 @@ export function BloodRequestCard({ request }: { request: BloodRequest }) {
             </span>
           </div>
           <Button asChild>
-            <Link href={`/requests/${request.id}`}>বিস্তারিত দেখুন</Link>
+            <Link href={`/requests/${request.id}`} prefetch>
+              বিস্তারিত দেখুন
+            </Link>
           </Button>
         </div>
       </CardContent>
