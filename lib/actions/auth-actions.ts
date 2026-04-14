@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { loginSchema, registerSchema } from "@/lib/schemas";
+import { changePasswordSchema, loginSchema, registerSchema } from "@/lib/schemas";
 
 export async function loginAction(values: unknown) {
   const parsed = loginSchema.safeParse(values);
@@ -99,4 +99,35 @@ export async function logoutAction() {
     await supabase.auth.signOut();
   }
   return { success: true };
+}
+
+export async function changePasswordAction(values: unknown) {
+  const parsed = changePasswordSchema.safeParse(values);
+  if (!parsed.success) {
+    return { success: false, message: parsed.error.issues[0]?.message ?? "পাসওয়ার্ড আপডেট করা যায়নি" };
+  }
+
+  const supabase = await createServerSupabaseClient();
+  if (!supabase) {
+    return { success: true, message: "ডেমো মোডে পাসওয়ার্ড আপডেট দেখানো হয়েছে" };
+  }
+
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, message: "পাসওয়ার্ড পরিবর্তনের জন্য লগইন করুন" };
+  }
+
+  const { error } = await supabase.auth.updateUser({
+    password: parsed.data.password
+  });
+
+  if (error) {
+    return { success: false, message: error.message };
+  }
+
+  revalidatePath("/dashboard/settings");
+  return { success: true, message: "পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে" };
 }

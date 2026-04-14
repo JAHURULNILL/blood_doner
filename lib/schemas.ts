@@ -88,3 +88,13 @@ export const settingsSchema = z.object({
   smsNotifications: z.boolean().default(false),
   publicPhone: z.boolean().default(false)
 });
+
+export const changePasswordSchema = z
+  .object({
+    password: z.string().min(8, "নতুন পাসওয়ার্ড অন্তত ৮ অক্ষরের হতে হবে"),
+    confirmPassword: z.string().min(8, "কনফার্ম পাসওয়ার্ড দিন")
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "দুইটি পাসওয়ার্ড এক হয়নি",
+    path: ["confirmPassword"]
+  });
