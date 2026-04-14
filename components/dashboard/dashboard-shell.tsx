@@ -1,4 +1,7 @@
+import Link from "next/link";
+import { ArrowUpRight, Home, LayoutDashboard } from "lucide-react";
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
+import { Button } from "@/components/ui/button";
 
 interface DashboardShellProps {
   currentPath: string;
@@ -12,6 +15,26 @@ export function DashboardShell({ currentPath, title, description, actions, child
   return (
     <div className="page-backdrop min-h-screen">
       <div className="container-shell py-10">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/70 bg-white/75 px-4 py-3 text-sm text-muted-foreground shadow-sm">
+          <span className="inline-flex items-center gap-2">
+            <LayoutDashboard className="h-4 w-4 text-primary" />
+            account workspace
+          </span>
+          <div className="flex flex-wrap gap-2">
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/">
+                <Home className="h-4 w-4" />
+                হোম
+              </Link>
+            </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/donors">
+                ডোনার সার্চ
+                <ArrowUpRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+        </div>
         <div className="mb-8 rounded-[2rem] border border-border/70 bg-white/80 p-7 shadow-soft backdrop-blur lg:p-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="space-y-3">
