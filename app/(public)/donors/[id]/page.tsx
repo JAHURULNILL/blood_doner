@@ -20,7 +20,7 @@ export default async function DonorDetailsPage({ params }: { params: Promise<{ i
       description="ডোনারের রক্তের গ্রুপ, লোকেশন, availability, donation history signal এবং privacy-aware যোগাযোগ তথ্য।"
     >
       <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-        <Card className="border-border/70">
+        <Card className="border-border/70 lg:sticky lg:top-28 lg:h-fit">
           <CardContent className="space-y-6 p-6">
             <div className="flex items-center gap-4">
               <Avatar className="h-20 w-20 rounded-3xl">
@@ -81,6 +81,23 @@ export default async function DonorDetailsPage({ params }: { params: Promise<{ i
               <div>
                 <p className="text-sm text-muted-foreground">জরুরি যোগাযোগ</p>
                 <p className="mt-1 font-medium">{maskPhone(donor.emergency_contact ?? donor.phone)}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border/70">
+            <CardContent className="grid gap-4 p-6 sm:grid-cols-3">
+              <div className="rounded-2xl bg-secondary/60 p-4">
+                <p className="text-sm text-muted-foreground">রক্তের গ্রুপ</p>
+                <p className="mt-2 font-display text-2xl font-semibold text-primary">{donor.blood_group}</p>
+              </div>
+              <div className="rounded-2xl bg-secondary/60 p-4">
+                <p className="text-sm text-muted-foreground">মোট ডোনেশন</p>
+                <p className="mt-2 font-display text-2xl font-semibold">{donor.total_donations}</p>
+              </div>
+              <div className="rounded-2xl bg-secondary/60 p-4">
+                <p className="text-sm text-muted-foreground">availability</p>
+                <p className="mt-2 font-display text-2xl font-semibold">{availability.label}</p>
               </div>
             </CardContent>
           </Card>

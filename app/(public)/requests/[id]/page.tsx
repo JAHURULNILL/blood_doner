@@ -55,7 +55,7 @@ export default async function RequestDetailsPage({ params }: { params: Promise<{
           </CardContent>
         </Card>
 
-        <div className="space-y-6">
+        <div className="space-y-6 lg:sticky lg:top-28 lg:h-fit">
           <Card className="border-border/70">
             <CardContent className="space-y-4 p-6">
               <h2 className="font-display text-xl font-semibold">Donor response</h2>
@@ -76,6 +76,19 @@ export default async function RequestDetailsPage({ params }: { params: Promise<{
               <Button variant="outline" className="w-full" asChild>
                 <a href={`tel:${request.contact_phone}`}>অনুরোধকারীর সাথে যোগাযোগ</a>
               </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border/70">
+            <CardContent className="grid gap-3 p-6 sm:grid-cols-2 lg:grid-cols-1">
+              <div className="rounded-2xl bg-secondary/60 p-4">
+                <p className="text-sm text-muted-foreground">প্রয়োজন</p>
+                <p className="mt-2 font-display text-2xl font-semibold">{request.quantity_bags} ব্যাগ</p>
+              </div>
+              <div className="rounded-2xl bg-secondary/60 p-4">
+                <p className="text-sm text-muted-foreground">স্ট্যাটাস</p>
+                <p className="mt-2 font-display text-2xl font-semibold">{request.status}</p>
+              </div>
             </CardContent>
           </Card>
 

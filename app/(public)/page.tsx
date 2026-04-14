@@ -3,8 +3,11 @@ import {
   Activity,
   ArrowRight,
   BadgeCheck,
+  CheckCircle2,
   Clock3,
+  Compass,
   HeartHandshake,
+  MapPin,
   Search,
   ShieldPlus,
   Siren,
@@ -28,21 +31,35 @@ export default async function HomePage() {
 
   return (
     <div>
-      <section className="relative overflow-hidden border-b border-border/70 bg-grid-fade">
-        <div className="container-shell grid gap-10 py-16 lg:grid-cols-[1.2fr_0.8fr] lg:py-24">
+      <section className="relative overflow-hidden border-b border-border/70">
+        <div className="absolute inset-0 ambient-grid opacity-50" />
+        <div className="container-shell relative grid gap-10 py-14 lg:grid-cols-[1.15fr_0.85fr] lg:py-24">
           <div className="space-y-8">
             <div className="inline-flex rounded-full border border-primary/15 bg-primary/6 px-4 py-1 text-sm text-primary">
               নির্ভরযোগ্য রক্তদাতা ও জরুরি রক্ত অনুরোধ প্ল্যাটফর্ম
             </div>
             <div className="space-y-5">
               <h1 className="font-display text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-                প্রয়োজনের মুহূর্তে সঠিক রক্তদাতার সাথে দ্রুত সংযোগ করুন
+                প্রয়োজনের মুহূর্তে সঠিক donor, সঠিক তথ্য, সঠিক সমন্বয়
               </h1>
               <p className="max-w-2xl text-lg leading-8 text-muted-foreground">
-                রক্তসেতু এমনভাবে ডিজাইন করা হয়েছে যাতে জরুরি সময়ে দ্রুত donor খুঁজে পাওয়া যায়, রক্তের
-                অনুরোধ বিশ্বাসযোগ্যভাবে প্রকাশ করা যায়, এবং পুরো অভিজ্ঞতাটি থাকে পরিষ্কার, নিরাপদ ও
-                দায়িত্বশীল।
+                রক্তসেতু জরুরি রক্তের অনুরোধ, donor search, verified community response এবং
+                স্বাস্থ্য-দায়িত্বশীল donor workflow-কে একটি পরিশীলিত ও ব্যবহারবান্ধব অভিজ্ঞতায় আনে।
               </p>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {[
+                "ভেরিফায়েড donor badge ও privacy-aware contact view",
+                "রক্তদানের ব্যবধানভিত্তিক availability hint",
+                "অনুরোধ, ব্লাড ব্যাংক, ক্যাম্পেইন ও awareness content একসাথে"
+              ].map((item) => (
+                <div key={item} className="rounded-2xl border border-border/70 bg-white/80 p-4 text-sm text-muted-foreground shadow-sm">
+                  <span className="inline-flex items-start gap-2">
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                    {item}
+                  </span>
+                </div>
+              ))}
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
@@ -62,51 +79,78 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <Card className="border-border/70 bg-white/90">
-            <CardContent className="space-y-6 p-6">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-primary">দ্রুত ডোনার সার্চ</p>
-                <h2 className="font-display text-2xl font-semibold">রক্তের গ্রুপ ও লোকেশন দিয়ে খুঁজুন</h2>
-                <p className="text-sm leading-7 text-muted-foreground">
-                  জরুরি পরিস্থিতিতে দ্রুত response পেতে filtered donor list দেখুন।
-                </p>
-              </div>
-              <form action="/donors" className="grid gap-4">
-                <Select name="bloodGroup" defaultValue="">
-                  <option value="">রক্তের গ্রুপ</option>
-                  {bloodGroups.map((group) => (
-                    <option key={group} value={group}>
-                      {group}
-                    </option>
-                  ))}
-                </Select>
-                <Select name="division" defaultValue="">
-                  <option value="">বিভাগ</option>
-                  {divisions.map((division) => (
-                    <option key={division} value={division}>
-                      {division}
-                    </option>
-                  ))}
-                </Select>
-                <Input name="district" placeholder="জেলা লিখুন" />
-                <Input name="upazila" placeholder="উপজেলা / এলাকা" />
-                <Button type="submit" className="w-full">
-                  <Search className="h-4 w-4" />
-                  অনুসন্ধান করুন
-                </Button>
-              </form>
-              <div className="grid gap-3 rounded-2xl bg-secondary/60 p-4 text-sm text-muted-foreground">
-                <p className="inline-flex items-center gap-2">
-                  <ShieldPlus className="h-4 w-4 text-primary" />
-                  ফোন নম্বর visitor-দের জন্য privacy-aware mode-এ আংশিক masked
-                </p>
-                <p className="inline-flex items-center gap-2">
-                  <Clock3 className="h-4 w-4 text-primary" />
-                  সর্বশেষ রক্তদানের তারিখ অনুযায়ী donor availability hint
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="space-y-5">
+            <Card className="soft-ring border-border/70 bg-white/90">
+              <CardContent className="space-y-6 p-6">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-primary">দ্রুত ডোনার সার্চ</p>
+                  <h2 className="font-display text-2xl font-semibold">রক্তের গ্রুপ ও লোকেশন দিয়ে খুঁজুন</h2>
+                  <p className="text-sm leading-7 text-muted-foreground">
+                    জরুরি পরিস্থিতিতে দ্রুত response পেতে filtered donor list দেখুন।
+                  </p>
+                </div>
+                <form action="/donors" className="grid gap-4">
+                  <Select name="bloodGroup" defaultValue="">
+                    <option value="">রক্তের গ্রুপ</option>
+                    {bloodGroups.map((group) => (
+                      <option key={group} value={group}>
+                        {group}
+                      </option>
+                    ))}
+                  </Select>
+                  <Select name="division" defaultValue="">
+                    <option value="">বিভাগ</option>
+                    {divisions.map((division) => (
+                      <option key={division} value={division}>
+                        {division}
+                      </option>
+                    ))}
+                  </Select>
+                  <Input name="district" placeholder="জেলা লিখুন" />
+                  <Input name="upazila" placeholder="উপজেলা / এলাকা" />
+                  <Button type="submit" className="w-full">
+                    <Search className="h-4 w-4" />
+                    অনুসন্ধান করুন
+                  </Button>
+                </form>
+                <div className="grid gap-3 rounded-2xl bg-secondary/60 p-4 text-sm text-muted-foreground">
+                  <p className="inline-flex items-center gap-2">
+                    <ShieldPlus className="h-4 w-4 text-primary" />
+                    ফোন নম্বর visitor-দের জন্য privacy-aware mode-এ আংশিক masked
+                  </p>
+                  <p className="inline-flex items-center gap-2">
+                    <Clock3 className="h-4 w-4 text-primary" />
+                    সর্বশেষ রক্তদানের তারিখ অনুযায়ী donor availability hint
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Card className="border-border/70 bg-white/90">
+                <CardContent className="space-y-3 p-5">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/8 text-primary">
+                    <Compass className="h-5 w-5" />
+                  </div>
+                  <h3 className="font-display text-lg font-semibold">লোকেশন-ফার্স্ট discovery</h3>
+                  <p className="text-sm leading-7 text-muted-foreground">
+                    বিভাগ, জেলা, উপজেলা ধরে donor ও রক্ত অনুরোধ quickly narrow down করুন।
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="border-border/70 bg-white/90">
+                <CardContent className="space-y-3 p-5">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/8 text-primary">
+                    <MapPin className="h-5 w-5" />
+                  </div>
+                  <h3 className="font-display text-lg font-semibold">জরুরি সাড়া সহজ করুন</h3>
+                  <p className="text-sm leading-7 text-muted-foreground">
+                    অনুরোধ detail, contact, urgency signal এবং donor response action একই flow-এ।
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -150,6 +194,17 @@ export default async function HomePage() {
           title="এখনই সাড়া প্রয়োজন এমন অনুরোধ"
           description="সক্রিয় ও যাচাইকৃত অনুরোধগুলো এক নজরে দেখুন এবং donor হিসেবে দ্রুত সাড়া দিন।"
         />
+        <div className="grid gap-4 md:grid-cols-3">
+          <Card className="border-border/70 bg-white/80">
+            <CardContent className="p-5 text-sm text-muted-foreground">জরুরি অনুরোধগুলো পরিষ্কার urgency badge ও location signal-সহ দেখানো হয়।</CardContent>
+          </Card>
+          <Card className="border-border/70 bg-white/80">
+            <CardContent className="p-5 text-sm text-muted-foreground">প্রকাশের সময়, প্রয়োজনীয় unit এবং donor response count দ্রুত বোঝা যায়।</CardContent>
+          </Card>
+          <Card className="border-border/70 bg-white/80">
+            <CardContent className="p-5 text-sm text-muted-foreground">request detail page থেকে donor interest বা সরাসরি contact flow শুরু করা যায়।</CardContent>
+          </Card>
+        </div>
         <div className="grid gap-6 lg:grid-cols-3">
           {requests.map((request) => (
             <BloodRequestCard key={request.id} request={request} />

@@ -22,7 +22,7 @@ export default async function DonorsPage({
       description="রক্তের গ্রুপ, বিভাগ, জেলা, উপজেলা এবং ভেরিফায়েড status দিয়ে filtered donor খুঁজুন।"
     >
       <div className="grid gap-8 lg:grid-cols-[320px_minmax(0,1fr)]">
-        <aside className="panel-muted h-fit p-5">
+        <aside className="panel-muted h-fit p-5 lg:sticky lg:top-28">
           <form className="grid gap-4" action="/donors">
             <Select name="bloodGroup" defaultValue={params.bloodGroup ?? ""}>
               <option value="">সব রক্তের গ্রুপ</option>
@@ -55,6 +55,20 @@ export default async function DonorsPage({
         </aside>
 
         <div className="space-y-6">
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="rounded-2xl border border-border/70 bg-white/80 p-4">
+              <p className="text-sm text-muted-foreground">মোট ফলাফল</p>
+              <p className="mt-2 font-display text-2xl font-semibold">{donors.length}</p>
+            </div>
+            <div className="rounded-2xl border border-border/70 bg-white/80 p-4">
+              <p className="text-sm text-muted-foreground">ভেরিফায়েড priority</p>
+              <p className="mt-2 text-sm leading-7 text-muted-foreground">trusted donor-দের first impression আরও পরিষ্কার</p>
+            </div>
+            <div className="rounded-2xl border border-border/70 bg-white/80 p-4">
+              <p className="text-sm text-muted-foreground">privacy</p>
+              <p className="mt-2 text-sm leading-7 text-muted-foreground">public view-এ contact number masked রাখা হয়</p>
+            </div>
+          </div>
           {donors.length ? (
             donors.map((donor) => <DonorCard key={donor.id} donor={donor} />)
           ) : (
