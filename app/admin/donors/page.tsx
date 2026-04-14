@@ -1,5 +1,5 @@
 import { requireAdmin } from "@/lib/auth";
-import { demoDonors } from "@/lib/demo-data";
+import { getAdminDonors } from "@/lib/data";
 import { toggleDonorVerificationAction } from "@/lib/actions/platform-actions";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 export default async function AdminDonorsPage() {
   await requireAdmin();
+  const donors = await getAdminDonors();
 
   return (
     <AdminShell
@@ -29,7 +30,7 @@ export default async function AdminDonorsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {demoDonors.map((donor) => (
+              {donors.map((donor) => (
                 <TableRow key={donor.id}>
                   <TableCell>{donor.full_name}</TableCell>
                   <TableCell>{donor.blood_group}</TableCell>

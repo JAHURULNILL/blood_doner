@@ -1,11 +1,11 @@
 import { requireUser } from "@/lib/auth";
-import { demoDonors } from "@/lib/demo-data";
+import { getCurrentUserDonorProfile } from "@/lib/data";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { DonorProfileForm } from "@/components/forms/donor-profile-form";
 
 export default async function DashboardProfileEditPage() {
   const user = await requireUser();
-  const donor = demoDonors.find((item) => item.user_id === user.id) ?? demoDonors[0];
+  const donor = await getCurrentUserDonorProfile(user.id);
 
   return (
     <DashboardShell

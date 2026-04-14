@@ -1,11 +1,12 @@
 import { requireAdmin } from "@/lib/auth";
-import { demoCampaigns } from "@/lib/demo-data";
+import { getCampaigns } from "@/lib/data";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { AdminCampaignForm } from "@/components/forms/admin-forms";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default async function AdminCampaignsPage() {
   await requireAdmin();
+  const campaigns = await getCampaigns();
 
   return (
     <AdminShell
@@ -18,7 +19,7 @@ export default async function AdminCampaignsPage() {
         <Card className="border-border/70">
           <CardContent className="space-y-4 p-6">
             <h2 className="font-display text-xl font-semibold">চলমান ক্যাম্পেইন</h2>
-            {demoCampaigns.map((campaign) => (
+            {campaigns.map((campaign) => (
               <div key={campaign.id} className="rounded-2xl border border-border p-4">
                 <p className="font-medium">{campaign.title}</p>
                 <p className="text-sm text-muted-foreground">

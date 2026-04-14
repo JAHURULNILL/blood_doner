@@ -1,11 +1,12 @@
 import { requireAdmin } from "@/lib/auth";
-import { demoBlogs } from "@/lib/demo-data";
+import { getBlogs } from "@/lib/data";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { AdminBlogForm } from "@/components/forms/admin-forms";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default async function AdminBlogsPage() {
   await requireAdmin();
+  const blogs = await getBlogs();
 
   return (
     <AdminShell
@@ -18,7 +19,7 @@ export default async function AdminBlogsPage() {
         <Card className="border-border/70">
           <CardContent className="space-y-4 p-6">
             <h2 className="font-display text-xl font-semibold">প্রকাশিত ব্লগ</h2>
-            {demoBlogs.map((blog) => (
+            {blogs.map((blog) => (
               <div key={blog.id} className="rounded-2xl border border-border p-4">
                 <p className="font-medium">{blog.title}</p>
                 <p className="text-sm text-muted-foreground">{blog.author_name}</p>

@@ -1,5 +1,5 @@
 import { requireAdmin } from "@/lib/auth";
-import { demoRequests } from "@/lib/demo-data";
+import { getAdminRequests } from "@/lib/data";
 import { toggleRequestStatusAction } from "@/lib/actions/platform-actions";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 export default async function AdminRequestsPage() {
   await requireAdmin();
+  const requests = await getAdminRequests();
 
   return (
     <AdminShell
@@ -28,7 +29,7 @@ export default async function AdminRequestsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {demoRequests.map((request) => (
+              {requests.map((request) => (
                 <TableRow key={request.id}>
                   <TableCell>{request.patient_name}</TableCell>
                   <TableCell>{request.blood_group}</TableCell>
