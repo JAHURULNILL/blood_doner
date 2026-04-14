@@ -3,6 +3,7 @@
 import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { donorProfileSchema, bloodRequestSchema, bloodBankSchema, blogSchema, campaignSchema, settingsSchema } from "@/lib/schemas";
+import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/utils";
 
@@ -11,13 +12,29 @@ export async function saveDonorProfileAction(values: Record<string, unknown> & {
   if (!parsed.success) return { success: false, message: parsed.error.issues[0]?.message ?? "তথ্য সঠিক নয়" };
 
   const supabase = await createServerSupabaseClient();
-  if (!supabase) return { success: true, message: "ডেমো মোডে প্রোফাইল সেভ হয়েছে" };
+  if (!supabase) return { success: false, message: "সার্ভার কনফিগারেশন পাওয়া যায়নি" };
 
   const {
     data: { user }
   } = await supabase.auth.getUser();
 
   if (!user) return { success: false, message: "লগইন প্রয়োজন" };
+
+  const adminSupabase = createAdminSupabaseClient();
+  if (!adminSupabase) return { success: false, message: "সার্ভার কনফিগারেশন অসম্পূর্ণ" };
+
+  const { error: userSyncError } = await adminSupabase.from("users").upsert(
+    {
+      id: user.id,
+      email: parsed.data.email,
+      full_name: parsed.data.fullName,
+      phone: parsed.data.phone,
+      avatar_url: user.user_metadata.avatar_url ?? null
+    },
+    { onConflict: "id" }
+  );
+
+  if (userSyncError) return { success: false, message: userSyncError.message };
 
   const payload = {
     user_id: user.id,
@@ -41,7 +58,7 @@ export async function saveDonorProfileAction(values: Record<string, unknown> & {
     profile_photo_url: values.profilePhotoUrl ?? null
   };
 
-  const { error } = await supabase.from("donor_profiles").upsert(payload, { onConflict: "user_id" });
+  const { error } = await adminSupabase.from("donor_profiles").upsert(payload, { onConflict: "user_id" });
   if (error) return { success: false, message: error.message };
 
   revalidatePath("/dashboard");
@@ -56,7 +73,7 @@ export async function createBloodRequestAction(values: Record<string, unknown> &
   if (!parsed.success) return { success: false, message: parsed.error.issues[0]?.message ?? "তথ্য সঠিক নয়" };
 
   const supabase = await createServerSupabaseClient();
-  if (!supabase) return { success: true, message: "ডেমো মোডে রক্তের অনুরোধ তৈরি হয়েছে" };
+  if (!supabase) return { success: false, message: "সার্ভার কনফিগারেশন পাওয়া যায়নি" };
 
   const {
     data: { user }
@@ -64,7 +81,9 @@ export async function createBloodRequestAction(values: Record<string, unknown> &
 
   if (!user) return { success: false, message: "লগইন প্রয়োজন" };
 
-  const { error } = await supabase.from("blood_requests").insert({
+  const adminSupabase = createAdminSupabaseClient() ?? supabase;
+
+  const { error } = await adminSupabase.from("blood_requests").insert({
     created_by: user.id,
     patient_name: parsed.data.patientName,
     blood_group: parsed.data.bloodGroup,
@@ -92,17 +111,18 @@ export async function createBloodRequestAction(values: Record<string, unknown> &
 
 export async function respondToRequestAction(requestId: string, message?: string) {
   const supabase = await createServerSupabaseClient();
-  if (!supabase) return { success: true, message: "ডেমো মোডে সাড়া রেকর্ড হয়েছে" };
+  if (!supabase) return { success: false, message: "সার্ভার কনফিগারেশন পাওয়া যায়নি" };
 
   const {
     data: { user }
   } = await supabase.auth.getUser();
   if (!user) return { success: false, message: "সাড়া দিতে লগইন প্রয়োজন" };
 
-  const { data: donor } = await supabase.from("donor_profiles").select("id").eq("user_id", user.id).single();
+  const adminSupabase = createAdminSupabaseClient() ?? supabase;
+  const { data: donor } = await adminSupabase.from("donor_profiles").select("id").eq("user_id", user.id).maybeSingle();
   if (!donor) return { success: false, message: "প্রথমে donor profile সম্পূর্ণ করুন" };
 
-  const { error } = await supabase.from("request_responses").upsert(
+  const { error } = await adminSupabase.from("request_responses").upsert(
     {
       request_id: requestId,
       donor_id: donor.id,
@@ -126,8 +146,8 @@ export async function saveSettingsAction(values: unknown) {
 export async function saveBloodBankAction(values: Record<string, unknown> & { id?: string }) {
   const parsed = bloodBankSchema.safeParse(values);
   if (!parsed.success) return { success: false, message: parsed.error.issues[0]?.message ?? "তথ্য সঠিক নয়" };
-  const supabase = await createServerSupabaseClient();
-  if (!supabase) return { success: true, message: "ডেমো মোডে ব্লাড ব্যাংক সেভ হয়েছে" };
+  const supabase = createAdminSupabaseClient();
+  if (!supabase) return { success: false, message: "সার্ভার কনফিগারেশন অসম্পূর্ণ" };
   const payload = { id: values.id ?? randomUUID(), ...parsed.data };
   const { error } = await supabase.from("blood_banks").upsert(payload);
   if (error) return { success: false, message: error.message };
@@ -139,9 +159,9 @@ export async function saveBloodBankAction(values: Record<string, unknown> & { id
 export async function saveBlogAction(values: Record<string, unknown> & { id?: string; coverImageUrl?: string | null }) {
   const parsed = blogSchema.safeParse(values);
   if (!parsed.success) return { success: false, message: parsed.error.issues[0]?.message ?? "তথ্য সঠিক নয়" };
-  const supabase = await createServerSupabaseClient();
+  const supabase = createAdminSupabaseClient();
   const slug = slugify(parsed.data.title);
-  if (!supabase) return { success: true, message: "ডেমো মোডে ব্লগ সেভ হয়েছে" };
+  if (!supabase) return { success: false, message: "সার্ভার কনফিগারেশন অসম্পূর্ণ" };
   const { error } = await supabase.from("blogs").upsert({
     id: values.id ?? randomUUID(),
     slug,
@@ -162,9 +182,9 @@ export async function saveBlogAction(values: Record<string, unknown> & { id?: st
 export async function saveCampaignAction(values: Record<string, unknown> & { id?: string; bannerImageUrl?: string | null }) {
   const parsed = campaignSchema.safeParse(values);
   if (!parsed.success) return { success: false, message: parsed.error.issues[0]?.message ?? "তথ্য সঠিক নয়" };
-  const supabase = await createServerSupabaseClient();
+  const supabase = createAdminSupabaseClient();
   const slug = slugify(parsed.data.title);
-  if (!supabase) return { success: true, message: "ডেমো মোডে ক্যাম্পেইন সেভ হয়েছে" };
+  if (!supabase) return { success: false, message: "সার্ভার কনফিগারেশন অসম্পূর্ণ" };
   const { error } = await supabase.from("campaigns").upsert({
     id: values.id ?? randomUUID(),
     slug,
@@ -184,8 +204,8 @@ export async function saveCampaignAction(values: Record<string, unknown> & { id?
 }
 
 export async function toggleRequestStatusAction(requestId: string, status: string) {
-  const supabase = await createServerSupabaseClient();
-  if (!supabase) return { success: true, message: "ডেমো মোডে স্ট্যাটাস আপডেট হয়েছে" };
+  const supabase = createAdminSupabaseClient();
+  if (!supabase) return { success: false, message: "সার্ভার কনফিগারেশন অসম্পূর্ণ" };
   const { error } = await supabase.from("blood_requests").update({ status }).eq("id", requestId);
   if (error) return { success: false, message: error.message };
   revalidatePath("/admin/requests");
@@ -194,8 +214,8 @@ export async function toggleRequestStatusAction(requestId: string, status: strin
 }
 
 export async function toggleDonorVerificationAction(donorId: string, isVerified: boolean) {
-  const supabase = await createServerSupabaseClient();
-  if (!supabase) return { success: true, message: "ডেমো মোডে ভেরিফিকেশন আপডেট হয়েছে" };
+  const supabase = createAdminSupabaseClient();
+  if (!supabase) return { success: false, message: "সার্ভার কনফিগারেশন অসম্পূর্ণ" };
   const { error } = await supabase.from("donor_profiles").update({ is_verified: isVerified }).eq("id", donorId);
   if (error) return { success: false, message: error.message };
   revalidatePath("/admin/donors");
