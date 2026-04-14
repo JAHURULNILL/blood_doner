@@ -22,13 +22,13 @@ export function DashboardShell({ currentPath, title, description, actions, child
           </span>
           <div className="flex flex-wrap gap-2">
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/">
+              <Link href="/" prefetch>
                 <Home className="h-4 w-4" />
                 হোম
               </Link>
             </Button>
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/donors">
+              <Link href="/donors" prefetch>
                 ডোনার সার্চ
                 <ArrowUpRight className="h-4 w-4" />
               </Link>

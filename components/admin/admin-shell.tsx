@@ -22,13 +22,13 @@ export function AdminShell({ currentPath, title, description, children, actions 
           </span>
           <div className="flex flex-wrap gap-2">
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/">
+              <Link href="/" prefetch>
                 <Home className="h-4 w-4" />
                 হোম
               </Link>
             </Button>
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/dashboard">
+              <Link href="/dashboard" prefetch>
                 ইউজার ড্যাশবোর্ড
                 <ArrowUpRight className="h-4 w-4" />
               </Link>

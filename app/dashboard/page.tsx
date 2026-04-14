@@ -37,7 +37,7 @@ export default async function DashboardPage() {
       description="আপনার donor profile, request activity, donation overview এবং quick actions একসাথে দেখুন।"
       actions={
         <Button asChild>
-          <Link href="/dashboard/profile/edit">
+          <Link href="/dashboard/profile/edit" prefetch>
             <PlusCircle className="h-4 w-4" />
             প্রোফাইল আপডেট
           </Link>
@@ -67,7 +67,9 @@ export default async function DashboardPage() {
             <div className="grid gap-3 sm:grid-cols-3">
               {dashboardQuickActions.map((item) => (
                 <Button key={item.href} variant="outline" asChild className="justify-start">
-                  <Link href={item.href}>{item.label}</Link>
+                  <Link href={item.href} prefetch>
+                    {item.label}
+                  </Link>
                 </Button>
               ))}
             </div>

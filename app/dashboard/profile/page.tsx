@@ -18,7 +18,9 @@ export default async function DashboardProfilePage() {
       description="ডোনার প্রোফাইল তথ্য, লোকেশন, availability এবং পরিচিতি একসাথে দেখুন।"
       actions={
         <Button asChild>
-          <Link href="/dashboard/profile/edit">এডিট প্রোফাইল</Link>
+          <Link href="/dashboard/profile/edit" prefetch>
+            এডিট প্রোফাইল
+          </Link>
         </Button>
       }
     >
