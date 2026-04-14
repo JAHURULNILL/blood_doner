@@ -46,6 +46,7 @@ export async function saveDonorProfileAction(values: Record<string, unknown> & {
 
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/profile");
+  revalidatePath("/dashboard/profile/edit");
   revalidatePath("/donors");
   return { success: true, message: "প্রোফাইল সফলভাবে আপডেট হয়েছে" };
 }

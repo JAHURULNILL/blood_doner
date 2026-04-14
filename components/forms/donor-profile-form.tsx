@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -24,9 +25,15 @@ interface DonorProfileFormProps {
   donor?: DonorProfile | null;
 }
 
+function getDateInputValue(value?: string | null) {
+  if (!value) return "";
+  return value.includes("T") ? value.slice(0, 10) : value;
+}
+
 export function DonorProfileForm({ donor }: DonorProfileFormProps) {
   const [pending, startTransition] = useTransition();
   const [file, setFile] = useState<File | null>(null);
+  const router = useRouter();
   const form = useForm<DonorProfileValues>({
     resolver: zodResolver(donorProfileSchema),
     defaultValues: {
@@ -35,13 +42,13 @@ export function DonorProfileForm({ donor }: DonorProfileFormProps) {
       phone: donor?.phone ?? "",
       bloodGroup: donor?.blood_group ?? "A+",
       gender: donor?.gender ?? "male",
-      dateOfBirth: donor?.date_of_birth ?? "",
+      dateOfBirth: getDateInputValue(donor?.date_of_birth),
       weight: donor?.weight ?? 50,
       division: donor?.division ?? divisions[0],
       district: donor?.district ?? "",
       upazila: donor?.upazila ?? "",
       address: donor?.address ?? "",
-      lastDonatedAt: donor?.last_donated_at ?? "",
+      lastDonatedAt: getDateInputValue(donor?.last_donated_at),
       totalDonations: donor?.total_donations ?? 0,
       emergencyContact: donor?.emergency_contact ?? "",
       bio: donor?.bio ?? "",
@@ -52,17 +59,27 @@ export function DonorProfileForm({ donor }: DonorProfileFormProps) {
 
   const submit = (values: DonorProfileValues) => {
     startTransition(async () => {
-      let profilePhotoUrl = donor?.profile_photo_url ?? null;
-      if (file) {
-        const upload = await uploadFileToStorage("profile-photos", file, "donors");
-        profilePhotoUrl = upload.publicUrl;
+      try {
+        let profilePhotoUrl = donor?.profile_photo_url ?? null;
+
+        if (file) {
+          const upload = await uploadFileToStorage("profile-photos", file, "donors");
+          profilePhotoUrl = upload.publicUrl;
+        }
+
+        const result = await saveDonorProfileAction({ ...values, profilePhotoUrl });
+        if (!result.success) {
+          toast.error(result.message);
+          return;
+        }
+
+        toast.success(result.message);
+        router.push("/dashboard/profile");
+        router.refresh();
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "প্রোফাইল সেভ করার সময় অপ্রত্যাশিত সমস্যা হয়েছে";
+        toast.error(message);
       }
-      const result = await saveDonorProfileAction({ ...values, profilePhotoUrl });
-      if (!result.success) {
-        toast.error(result.message);
-        return;
-      }
-      toast.success(result.message);
     });
   };
 
