@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, HeartHandshake, Mail, PhoneCall, ShieldCheck } from "lucide-react";
+import { ArrowUpRight, HeartHandshake, Mail, MapPin, PhoneCall, ShieldCheck } from "lucide-react";
 import { publicNavItems, siteConfig } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 
@@ -76,17 +76,25 @@ export function Footer() {
           <div className="space-y-4">
             <p className="font-medium text-foreground">সহায়তা</p>
             <div className="grid gap-3 text-sm text-muted-foreground">
+              {siteConfig.contactPhone ? (
+                <span className="inline-flex items-center gap-2">
+                  <PhoneCall className="h-4 w-4 text-primary" />
+                  {siteConfig.contactPhone}
+                </span>
+              ) : null}
+              {siteConfig.contactEmail ? (
+                <span className="inline-flex items-center gap-2">
+                  <Mail className="h-4 w-4 text-primary" />
+                  {siteConfig.contactEmail}
+                </span>
+              ) : null}
               <span className="inline-flex items-center gap-2">
-                <PhoneCall className="h-4 w-4 text-primary" />
-                01710-000000
-              </span>
-              <span className="inline-flex items-center gap-2">
-                <Mail className="h-4 w-4 text-primary" />
-                support@roktodaata.com
+                <MapPin className="h-4 w-4 text-primary" />
+                {siteConfig.locationLabel}
               </span>
               <span className="inline-flex items-center gap-2">
                 <HeartHandshake className="h-4 w-4 text-primary" />
-                কমিউনিটি সমন্বয় সহায়তা
+                যোগাযোগ ফর্মের মাধ্যমে সমন্বয় করা হয়
               </span>
             </div>
           </div>

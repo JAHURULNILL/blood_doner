@@ -1,4 +1,5 @@
 import { Mail, MapPin, PhoneCall } from "lucide-react";
+import { siteConfig } from "@/lib/constants";
 import { ContactForm } from "@/components/forms/contact-form";
 import { PageShell } from "@/components/layout/page-shell";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,22 +9,36 @@ export default function ContactPage() {
     <PageShell
       eyebrow="যোগাযোগ"
       title="সহায়তা, অংশীদারিত্ব বা জরুরি সমন্বয়ের জন্য যোগাযোগ করুন"
-      description="সংগঠন, হাসপাতাল, কমিউনিটি ভলান্টিয়ার বা donor support বিষয়ে যোগাযোগের জন্য আমাদের সাথে সংযুক্ত থাকুন।"
+      description="সংগঠন, হাসপাতাল, কমিউনিটি ভলান্টিয়ার বা donor support বিষয়ে যোগাযোগের জন্য আমাদের সাথে যুক্ত থাকুন।"
     >
       <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
         <Card className="border-border/70">
           <CardContent className="space-y-4 p-6 text-sm text-muted-foreground">
-            <p className="inline-flex items-center gap-2">
-              <PhoneCall className="h-4 w-4 text-primary" />
-              01710-000000
-            </p>
-            <p className="inline-flex items-center gap-2">
-              <Mail className="h-4 w-4 text-primary" />
-              support@roktosetu.com
-            </p>
+            {siteConfig.contactPhone ? (
+              <p className="inline-flex items-center gap-2">
+                <PhoneCall className="h-4 w-4 text-primary" />
+                {siteConfig.contactPhone}
+              </p>
+            ) : (
+              <p className="inline-flex items-center gap-2">
+                <PhoneCall className="h-4 w-4 text-primary" />
+                সরাসরি ফোন নম্বর এখনো প্রকাশ করা হয়নি
+              </p>
+            )}
+            {siteConfig.contactEmail ? (
+              <p className="inline-flex items-center gap-2">
+                <Mail className="h-4 w-4 text-primary" />
+                {siteConfig.contactEmail}
+              </p>
+            ) : (
+              <p className="inline-flex items-center gap-2">
+                <Mail className="h-4 w-4 text-primary" />
+                যোগাযোগ ফর্মের মাধ্যমে বার্তা পাঠান
+              </p>
+            )}
             <p className="inline-flex items-center gap-2">
               <MapPin className="h-4 w-4 text-primary" />
-              ঢাকা, বাংলাদেশ
+              {siteConfig.locationLabel}
             </p>
           </CardContent>
         </Card>

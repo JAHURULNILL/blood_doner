@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import { demoUsers } from "@/lib/demo-data";
 import type { UserRecord } from "@/lib/types";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -7,7 +6,7 @@ export async function getCurrentUser(): Promise<UserRecord | null> {
   const supabase = await createServerSupabaseClient();
 
   if (!supabase) {
-    return demoUsers[0];
+    return null;
   }
 
   const {
@@ -40,7 +39,7 @@ export async function requireUser() {
 export async function requireAdmin() {
   const supabase = await createServerSupabaseClient();
   if (!supabase) {
-    return demoUsers[1];
+    redirect("/login");
   }
   const user = await requireUser();
   if (user.role !== "admin") {

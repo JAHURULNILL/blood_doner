@@ -1,23 +1,17 @@
 import { Home, LayoutDashboard, ShieldCheck, UserRound, Users2 } from "lucide-react";
 
 export const siteConfig = {
-  name: "রক্তসেতু",
+  name: "রক্তদাতা",
   description:
     "প্রিমিয়াম, নির্ভরযোগ্য ও আধুনিক রক্তদাতা সংযোগ প্ল্যাটফর্ম। দ্রুত ডোনার খুঁজুন, রক্তের অনুরোধ প্রকাশ করুন এবং কমিউনিটিকে একসাথে রাখুন।",
-  url: "https://example.com"
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://roktodaata.vercel.app",
+  contactEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? "",
+  contactPhone: process.env.NEXT_PUBLIC_SUPPORT_PHONE ?? "",
+  locationLabel: "বাংলাদেশভিত্তিক অনলাইন সমন্বয় প্ল্যাটফর্ম"
 };
 
 export const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"] as const;
-export const divisions = [
-  "ঢাকা",
-  "চট্টগ্রাম",
-  "রাজশাহী",
-  "খুলনা",
-  "বরিশাল",
-  "সিলেট",
-  "রংপুর",
-  "ময়মনসিংহ"
-] as const;
+export const divisions = ["ঢাকা", "চট্টগ্রাম", "রাজশাহী", "খুলনা", "বরিশাল", "সিলেট", "রংপুর", "ময়মনসিংহ"] as const;
 export const urgencyLevels = ["Emergency", "Urgent", "Normal"] as const;
 export const requestStatuses = ["Open", "In progress", "Fulfilled", "Cancelled"] as const;
 

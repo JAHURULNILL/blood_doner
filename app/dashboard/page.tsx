@@ -3,6 +3,7 @@ import { Activity, Droplets, PlusCircle, TimerReset } from "lucide-react";
 import { requireUser } from "@/lib/auth";
 import { dashboardQuickActions } from "@/lib/constants";
 import { getCurrentUserDonorProfile, getCurrentUserRequests } from "@/lib/data";
+import { calculateProfileCompletion } from "@/lib/utils";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { ProfileSummaryCard } from "@/components/cards/profile-summary-card";
 import { StatCard } from "@/components/cards/stat-card";
@@ -15,20 +16,7 @@ export default async function DashboardPage() {
   const user = await requireUser();
   const donor = await getCurrentUserDonorProfile(user.id);
   const myRequests = (await getCurrentUserRequests(user.id)).slice(0, 2);
-  const completion = donor
-    ? [
-        donor.full_name,
-        donor.email,
-        donor.phone,
-        donor.blood_group,
-        donor.division,
-        donor.district,
-        donor.upazila,
-        donor.address,
-        donor.emergency_contact,
-        donor.bio
-      ].filter(Boolean).length * 10
-    : 20;
+  const completion = calculateProfileCompletion(donor);
 
   return (
     <DashboardShell

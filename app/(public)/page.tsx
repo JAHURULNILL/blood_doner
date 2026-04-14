@@ -28,8 +28,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 
-export const revalidate = 300;
-
 export default async function HomePage() {
   const { donors, requests, campaigns, blogs, stats } = await getHomeData();
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
 import { getCurrentUserDonorProfile } from "@/lib/data";
+import { calculateProfileCompletion } from "@/lib/utils";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { ProfileSummaryCard } from "@/components/cards/profile-summary-card";
 import { EmptyState } from "@/components/sections/empty-state";
@@ -10,6 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 export default async function DashboardProfilePage() {
   const user = await requireUser();
   const donor = await getCurrentUserDonorProfile(user.id);
+  const completion = calculateProfileCompletion(donor);
 
   return (
     <DashboardShell
@@ -26,7 +28,7 @@ export default async function DashboardProfilePage() {
     >
       {donor ? (
         <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-          <ProfileSummaryCard donor={donor} completion={92} />
+          <ProfileSummaryCard donor={donor} completion={completion} />
           <Card className="border-border/70">
             <CardContent className="grid gap-4 p-6 sm:grid-cols-2">
               <div>
