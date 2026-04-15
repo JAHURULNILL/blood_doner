@@ -4,15 +4,13 @@ import { bloodGroups } from "@/lib/constants";
 import { getHomeData } from "@/lib/data";
 import { BlogCard } from "@/components/cards/blog-card";
 import { CampaignCard } from "@/components/cards/campaign-card";
-import { DonorCard } from "@/components/cards/donor-card";
-import { BloodRequestCard } from "@/components/cards/request-card";
 import { StatCard } from "@/components/cards/stat-card";
 import { SectionHeader } from "@/components/sections/section-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default async function HomePage() {
-  const { donors, requests, campaigns, blogs, stats } = await getHomeData();
+  const { campaigns, blogs, stats } = await getHomeData();
   const benefitItems = [
     "হৃদরোগের ঝুঁকি কমাতে সহায়তা করে",
     "শরীরে নতুন রক্তকোষ তৈরিতে ভূমিকা রাখে",
@@ -84,28 +82,6 @@ export default async function HomePage() {
               <StatCard label="সক্রিয় অনুরোধ" value={`${stats.activeRequests}`} icon={Siren} />
             </div>
           </div>
-        </div>
-      </section>
-
-      <section className="container-shell space-y-8 py-16">
-        <SectionHeader eyebrow="জরুরি অনুরোধ" title="এখনই সাড়া প্রয়োজন এমন অনুরোধ" description="সক্রিয় request-গুলো এক নজরে দেখুন।" />
-        <div className="grid gap-6 lg:grid-cols-3">
-          {requests.map((request) => (
-            <BloodRequestCard key={request.id} request={request} />
-          ))}
-        </div>
-      </section>
-
-      <section className="container-shell space-y-8 py-16">
-        <SectionHeader
-          eyebrow="রক্তদাতা"
-          title="খুঁজে নিন প্রস্তুত রক্তদাতা"
-          description="গ্রুপ, লোকেশন এবং রক্তদানের ব্যবধান দেখে উপযুক্ত রক্তদাতা বেছে নিন।"
-        />
-        <div className="grid gap-6 lg:grid-cols-3">
-          {donors.map((donor) => (
-            <DonorCard key={donor.id} donor={donor} />
-          ))}
         </div>
       </section>
 
