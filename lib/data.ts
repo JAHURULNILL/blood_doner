@@ -1,6 +1,7 @@
 import { unstable_noStore as noStore } from "next/cache";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { createPublicSupabaseClient } from "@/lib/supabase/public";
+import { getAvailabilityFromLastDonation } from "@/lib/utils";
 import type {
   BloodBank,
   BloodRequest,
@@ -89,10 +90,16 @@ export async function getDonors(filters?: Record<string, string | undefined>) {
   if (filters?.division) query = query.ilike("division", `%${filters.division}%`);
   if (filters?.district) query = query.ilike("district", `%${filters.district}%`);
   if (filters?.upazila) query = query.ilike("upazila", `%${filters.upazila}%`);
-  if (filters?.availability === "true") query = query.eq("availability_status", "available");
   if (filters?.verified === "true") query = query.eq("is_verified", true);
   const { data } = await query;
-  return (data ?? []) as DonorProfile[];
+
+  let donors = (data ?? []) as DonorProfile[];
+
+  if (filters?.availability === "true") {
+    donors = donors.filter((donor) => getAvailabilityFromLastDonation(donor.last_donated_at).eligible);
+  }
+
+  return donors;
 }
 
 export async function getDonorById(id: string) {

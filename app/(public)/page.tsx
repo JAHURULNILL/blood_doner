@@ -1,10 +1,5 @@
 import Link from "next/link";
-import {
-  ArrowRight,
-  BadgeCheck,
-  Siren,
-  Users
-} from "lucide-react";
+import { BadgeCheck, Siren, Users } from "lucide-react";
 import { bloodGroups } from "@/lib/constants";
 import { getHomeData } from "@/lib/data";
 import { BlogCard } from "@/components/cards/blog-card";
@@ -40,13 +35,12 @@ export default async function HomePage() {
               <div className="flex flex-wrap gap-3">
                 <Button asChild size="lg" className="shadow-sm">
                   <Link href="/donors" prefetch>
-                    ডোনার খুঁজুন
-                    <ArrowRight className="h-4 w-4" />
+                    রক্তদাতা খুঁজুন
                   </Link>
                 </Button>
                 <Button variant="outline" size="lg" asChild className="bg-white/85">
-                  <Link href="/requests?create=1" prefetch>
-                    রক্তের অনুরোধ দিন
+                  <Link href="/register" prefetch>
+                    রক্তদাতা হোন
                   </Link>
                 </Button>
               </div>
@@ -62,11 +56,7 @@ export default async function HomePage() {
       </section>
 
       <section className="container-shell space-y-8 py-16">
-        <SectionHeader
-          eyebrow="জরুরি অনুরোধ"
-          title="এখনই সাড়া প্রয়োজন এমন অনুরোধ"
-          description="সক্রিয় request-গুলো এক নজরে দেখুন।"
-        />
+        <SectionHeader eyebrow="জরুরি অনুরোধ" title="এখনই সাড়া প্রয়োজন এমন অনুরোধ" description="সক্রিয় request-গুলো এক নজরে দেখুন।" />
         <div className="grid gap-6 lg:grid-cols-3">
           {requests.map((request) => (
             <BloodRequestCard key={request.id} request={request} />
@@ -76,9 +66,9 @@ export default async function HomePage() {
 
       <section className="container-shell space-y-8 py-16">
         <SectionHeader
-          eyebrow="ভেরিফায়েড donor"
-          title="কমিউনিটির সক্রিয় এবং প্রস্তুত donor"
-          description="গ্রুপ, লোকেশন এবং availability দেখে donor বাছাই করুন।"
+          eyebrow="রক্তদাতা"
+          title="খুঁজে নিন প্রস্তুত রক্তদাতা"
+          description="গ্রুপ, লোকেশন এবং রক্তদানের ব্যবধান দেখে উপযুক্ত রক্তদাতা বেছে নিন।"
         />
         <div className="grid gap-6 lg:grid-cols-3">
           {donors.map((donor) => (
@@ -90,8 +80,8 @@ export default async function HomePage() {
       <section className="container-shell space-y-8 py-16">
         <SectionHeader
           eyebrow="রক্তের গ্রুপ"
-          title="গ্রুপভিত্তিক donor খোঁজা সহজ করুন"
-          description="রক্তের গ্রুপ select করে location filter-এর সাথে donor খোঁজা দ্রুত ও কম বিভ্রান্তিকর রাখা হয়েছে।"
+          title="গ্রুপভিত্তিক খোঁজা আরও সহজ"
+          description="যে গ্রুপ দরকার, সেটি বেছে নিয়ে donor search-এ গিয়ে সরাসরি তালিকা দেখুন।"
         />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {bloodGroups.map((group) => (
@@ -99,7 +89,7 @@ export default async function HomePage() {
               <CardContent className="space-y-3 p-6">
                 <div className="font-display text-4xl font-semibold tracking-tight text-primary">{group}</div>
                 <p className="text-sm leading-7 text-muted-foreground">
-                  এই গ্রুপের donor খুঁজতে location filter, verified profile এবং availability status দেখুন।
+                  এই গ্রুপের রক্তদাতা খুঁজতে donor search page-এ গিয়ে location filter ব্যবহার করুন।
                 </p>
               </CardContent>
             </Card>
@@ -144,7 +134,7 @@ export default async function HomePage() {
           <div className="grid gap-4">
             {[
               ["কে রক্ত দিতে পারেন?", "সাধারণত ১৮-৬০ বছর বয়সী, সুস্থ এবং নির্ধারিত ওজনের ব্যক্তি রক্ত দিতে পারেন।"],
-              ["কতদিন পর আবার রক্ত দেওয়া যায়?", "সাধারণভাবে অন্তত ১২০ দিনের ব্যবধান রাখা ভালো।"],
+              ["কতদিন পর আবার রক্ত দেওয়া যায়?", "সাধারণভাবে অন্তত ৩ মাসের ব্যবধান রাখা ভালো।"],
               ["জরুরি donor response কীভাবে কাজ করে?", "request detail page থেকে donor interest জানানো হয় এবং যোগাযোগের পথ সহজ করা হয়।"]
             ].map(([title, body]) => (
               <Card key={title} className="border-border/70 bg-white shadow-sm">

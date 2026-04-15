@@ -1,5 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
-import { format, formatDistanceToNow, isAfter, subDays } from "date-fns";
+import { addMonths, format, formatDistanceToNow } from "date-fns";
 import { twMerge } from "tailwind-merge";
 import type { DonorProfile } from "@/lib/types";
 
@@ -19,17 +19,17 @@ export function formatRelative(date?: string | null, fallback = "তথ্য �
 
 export function getAvailabilityFromLastDonation(lastDonationDate?: string | null) {
   if (!lastDonationDate) {
-    return { label: "উপলভ্য", tone: "success" as const, eligible: true };
+    return { label: "সময় হয়েছে", tone: "success" as const, eligible: true };
   }
 
-  const eligibleDate = subDays(new Date(), 120);
-  const blocked = isAfter(new Date(lastDonationDate), eligibleDate);
+  const nextEligibleDate = addMonths(new Date(lastDonationDate), 3);
+  const eligible = nextEligibleDate <= new Date();
 
-  if (blocked) {
-    return { label: "বিশ্রামে", tone: "warning" as const, eligible: false };
+  if (!eligible) {
+    return { label: "সময় হয়নি", tone: "warning" as const, eligible: false };
   }
 
-  return { label: "উপলভ্য", tone: "success" as const, eligible: true };
+  return { label: "সময় হয়েছে", tone: "success" as const, eligible: true };
 }
 
 export function maskPhone(phone: string) {

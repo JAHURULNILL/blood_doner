@@ -17,9 +17,9 @@ export default async function DonorsPage({
 
   return (
     <PageShell
-      eyebrow="ডোনার সার্চ"
-      title="রক্তদাতা খুঁজুন"
-      description="রক্তের গ্রুপ, বিভাগ, জেলা, উপজেলা এবং ভেরিফায়েড status দিয়ে filtered donor খুঁজুন।"
+      eyebrow="রক্তদাতা খুঁজুন"
+      title="গ্রুপ ও এলাকা দিয়ে রক্তদাতা খুঁজুন"
+      description="লগইন ছাড়াই রক্তের গ্রুপ, বিভাগ, জেলা ও এলাকা দিয়ে রেজিস্টার্ড রক্তদাতাদের তালিকা দেখুন এবং সরাসরি কল করুন।"
     >
       <div className="grid gap-8 lg:grid-cols-[320px_minmax(0,1fr)]">
         <aside className="panel-muted h-fit p-5 lg:sticky lg:top-28">
@@ -32,6 +32,7 @@ export default async function DonorsPage({
                 </option>
               ))}
             </Select>
+
             <Select name="division" defaultValue={params.division ?? ""}>
               <option value="">সব বিভাগ</option>
               {divisions.map((division) => (
@@ -40,43 +41,48 @@ export default async function DonorsPage({
                 </option>
               ))}
             </Select>
-            <Input name="district" placeholder="জেলা" defaultValue={params.district} />
-            <Input name="upazila" placeholder="উপজেলা / এলাকা" defaultValue={params.upazila} />
+
+            <Input name="district" placeholder="জেলা লিখুন" defaultValue={params.district} />
+            <Input name="upazila" placeholder="এলাকা / উপজেলা লিখুন" defaultValue={params.upazila} />
+
             <label className="flex items-center gap-3 rounded-2xl border border-border p-3 text-sm">
               <input type="checkbox" name="availability" value="true" defaultChecked={params.availability === "true"} />
-              কেবল উপলভ্য donor
+              শুধু সময় হয়েছে এমন রক্তদাতা
             </label>
+
             <label className="flex items-center gap-3 rounded-2xl border border-border p-3 text-sm">
               <input type="checkbox" name="verified" value="true" defaultChecked={params.verified === "true"} />
-              কেবল ভেরিফায়েড donor
+              শুধু ভেরিফায়েড রক্তদাতা
             </label>
-            <Button type="submit">ফিল্টার প্রয়োগ করুন</Button>
+
+            <Button type="submit">রক্তদাতা খুঁজুন</Button>
           </form>
         </aside>
 
         <div className="space-y-6">
-          <div className="grid gap-4 sm:grid-cols-3">
-            <div className="rounded-2xl border border-border/70 bg-white/80 p-4">
-              <p className="text-sm text-muted-foreground">মোট ফলাফল</p>
-              <p className="mt-2 font-display text-2xl font-semibold">{donors.length}</p>
-            </div>
-            <div className="rounded-2xl border border-border/70 bg-white/80 p-4">
-              <p className="text-sm text-muted-foreground">ভেরিফায়েড priority</p>
-              <p className="mt-2 text-sm leading-7 text-muted-foreground">trusted donor-দের first impression আরও পরিষ্কার</p>
-            </div>
-            <div className="rounded-2xl border border-border/70 bg-white/80 p-4">
-              <p className="text-sm text-muted-foreground">privacy</p>
-              <p className="mt-2 text-sm leading-7 text-muted-foreground">public view-এ contact number masked রাখা হয়</p>
-            </div>
+          <div className="rounded-[1.75rem] border border-border/70 bg-white/90 p-5 shadow-soft">
+            <p className="text-sm text-muted-foreground">মোট রক্তদাতা</p>
+            <p className="mt-2 font-display text-3xl font-semibold">{donors.length}</p>
+            <p className="mt-2 text-sm leading-7 text-muted-foreground">
+              নিচের সব card public visitor-এর জন্য visible। প্রয়োজন হলে সরাসরি কল করে যোগাযোগ করতে পারবেন।
+            </p>
           </div>
+
           {donors.length ? (
-            donors.map((donor) => <DonorCard key={donor.id} donor={donor} />)
+            <div className="space-y-4">
+              <h2 className="font-display text-2xl font-semibold">সকল রক্তদাতা</h2>
+              <div className="grid gap-5">
+                {donors.map((donor) => (
+                  <DonorCard key={donor.id} donor={donor} revealPhone />
+                ))}
+              </div>
+            </div>
           ) : (
             <EmptyState
-              title="কোনো donor পাওয়া যায়নি"
-              description="ফিল্টার কিছুটা শিথিল করে আবার চেষ্টা করুন অথবা ব্লাড রিকোয়েস্ট প্রকাশ করুন।"
-              actionLabel="রক্তের অনুরোধ প্রকাশ করুন"
-              actionHref="/requests?create=1"
+              title="কোনো রক্তদাতা পাওয়া যায়নি"
+              description="ফিল্টার একটু কমিয়ে আবার খুঁজুন অথবা নতুন রক্তদাতা হিসেবে নিবন্ধন করুন।"
+              actionLabel="রক্তদাতা হোন"
+              actionHref="/register"
             />
           )}
         </div>
