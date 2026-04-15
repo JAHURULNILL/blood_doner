@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { MapPin, Phone, ShieldCheck } from "lucide-react";
+import { MapPin, ShieldCheck } from "lucide-react";
 import type { DonorProfile } from "@/lib/types";
-import { formatDate, getAvailabilityFromLastDonation, maskPhone } from "@/lib/utils";
+import { formatDate, getAvailabilityFromLastDonation } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,12 +9,10 @@ import { Card, CardContent } from "@/components/ui/card";
 
 interface DonorCardProps {
   donor: DonorProfile;
-  revealPhone?: boolean;
 }
 
-export function DonorCard({ donor, revealPhone = false }: DonorCardProps) {
+export function DonorCard({ donor }: DonorCardProps) {
   const availability = getAvailabilityFromLastDonation(donor.last_donated_at);
-  const displayPhone = revealPhone ? donor.phone : maskPhone(donor.phone);
 
   return (
     <Card className="border-border/70 bg-white/95 shadow-soft transition-transform duration-200 hover:-translate-y-1">
@@ -28,7 +26,9 @@ export function DonorCard({ donor, revealPhone = false }: DonorCardProps) {
           <div className="min-w-0 flex-1 space-y-2">
             <div className="flex flex-wrap items-center gap-2">
               <h3 className="font-display text-lg font-semibold">{donor.full_name}</h3>
-              <Badge variant="danger">{donor.blood_group}</Badge>
+              <div className="inline-flex min-w-[72px] items-center justify-center rounded-full bg-primary px-4 py-2 text-base font-bold tracking-wide text-primary-foreground shadow-[0_10px_24px_-16px_rgba(220,38,38,0.9)]">
+                {donor.blood_group}
+              </div>
               {donor.is_verified ? (
                 <Badge variant="success" className="gap-1">
                   <ShieldCheck className="h-3.5 w-3.5" />
@@ -41,10 +41,6 @@ export function DonorCard({ donor, revealPhone = false }: DonorCardProps) {
               <span className="inline-flex items-center gap-2">
                 <MapPin className="h-4 w-4" />
                 {donor.upazila}, {donor.district}
-              </span>
-              <span className="inline-flex items-center gap-2">
-                <Phone className="h-4 w-4" />
-                {displayPhone}
               </span>
             </div>
           </div>

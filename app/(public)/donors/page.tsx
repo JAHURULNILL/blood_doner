@@ -73,7 +73,7 @@ export default async function DonorsPage({
               <h2 className="font-display text-2xl font-semibold">সকল রক্তদাতা</h2>
               <div className="grid gap-5">
                 {donors.map((donor) => (
-                  <DonorCard key={donor.id} donor={donor} revealPhone />
+                  <DonorCard key={donor.id} donor={donor} />
                 ))}
               </div>
             </div>
