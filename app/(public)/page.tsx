@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BadgeCheck, Check, Siren, Users } from "lucide-react";
+import { BadgeCheck, Check, HeartPulse, Siren, Users } from "lucide-react";
 import { getHomeData } from "@/lib/data";
 import { BlogCard } from "@/components/cards/blog-card";
 import { CampaignCard } from "@/components/cards/campaign-card";
@@ -24,62 +24,72 @@ export default async function HomePage() {
         <div className="absolute inset-x-0 top-0 h-52 bg-[radial-gradient(circle_at_top,rgba(127,29,29,0.08),transparent_62%)]" />
 
         <div className="container-shell relative py-12 sm:py-16 lg:py-20">
-          <div className="space-y-8">
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-start">
-              <div className="space-y-8">
-                <div className="space-y-5">
-                  <h1 className="max-w-4xl font-display text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-                    আপনার রক্তদান, একটি জীবন বাঁচাতে পারে
-                  </h1>
-                  <p className="max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">
-                    প্রয়োজন হলে দ্রুত রক্তদাতা খুঁজুন, আর রক্তদাতা হলে নিজের তথ্য যুক্ত করে অন্যের পাশে দাঁড়ান।
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-start">
+            <div className="space-y-8">
+              <div className="space-y-5">
+                <h1 className="max-w-4xl font-display text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
+                  আপনার রক্তদান, একটি জীবন বাঁচাতে পারে
+                </h1>
+                <p className="max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">
+                  প্রয়োজন হলে দ্রুত রক্তদাতা খুঁজুন, আর রক্তদাতা হলে নিজের তথ্য যুক্ত করে অন্যের পাশে দাঁড়ান।
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <Button asChild size="lg" className="shadow-sm">
+                  <Link href="/donors" prefetch>
+                    রক্তদাতা খুঁজুন
+                  </Link>
+                </Button>
+                <Button variant="outline" size="lg" asChild className="bg-white/85">
+                  <Link href="/register" prefetch>
+                    রক্তদাতা হোন
+                  </Link>
+                </Button>
+              </div>
+            </div>
+
+            <Card className="border-primary/12 bg-white/95 shadow-[0_24px_60px_-36px_rgba(220,38,38,0.35)] lg:mt-6">
+              <CardContent className="space-y-6 p-6 sm:p-7">
+                <div className="space-y-3">
+                  <h2 className="font-display text-2xl font-semibold tracking-tight text-primary sm:text-[2rem]">
+                    রক্তদানের উপকারিতা
+                  </h2>
+                  <p className="text-sm leading-7 text-muted-foreground sm:text-base">
+                    রক্তদান শরীর ও মনের জন্য ইতিবাচক। নিয়মিত রক্তদান জীবন বাঁচানোর পাশাপাশি নিজেকেও সচেতন ও দায়িত্বশীল রাখে।
                   </p>
                 </div>
 
-                <div className="flex flex-wrap gap-3">
-                  <Button asChild size="lg" className="shadow-sm">
-                    <Link href="/donors" prefetch>
-                      রক্তদাতা খুঁজুন
-                    </Link>
-                  </Button>
-                  <Button variant="outline" size="lg" asChild className="bg-white/85">
-                    <Link href="/register" prefetch>
-                      রক্তদাতা হোন
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-
-              <Card className="border-primary/12 bg-white/95 shadow-[0_24px_60px_-36px_rgba(220,38,38,0.35)] lg:mt-6">
-                <CardContent className="space-y-6 p-6 sm:p-7">
-                  <div className="space-y-3">
-                    <h2 className="font-display text-2xl font-semibold tracking-tight text-primary sm:text-[2rem]">
-                      রক্তদানের উপকারিতা
-                    </h2>
-                    <p className="text-sm leading-7 text-muted-foreground sm:text-base">
-                      রক্তদান শরীর ও মনের জন্য ইতিবাচক। নিয়মিত রক্তদান জীবন বাঁচানোর পাশাপাশি নিজেকেও সচেতন ও দায়িত্বশীল রাখে।
-                    </p>
-                  </div>
-
-                  <div className="space-y-4">
-                    {benefitItems.map((item) => (
-                      <div key={item} className="flex items-start gap-3">
-                        <div className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary">
-                          <Check className="h-4 w-4" />
-                        </div>
-                        <p className="text-sm leading-7 text-foreground sm:text-base">{item}</p>
+                <div className="space-y-4">
+                  {benefitItems.map((item) => (
+                    <div key={item} className="flex items-start gap-3">
+                      <div className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary">
+                        <Check className="h-4 w-4" />
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                      <p className="text-sm leading-7 text-foreground sm:text-base">{item}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
 
-            <div className="grid gap-4 sm:grid-cols-3">
-              <StatCard label="মোট ব্যবহারকারী" value={`${stats.totalUsers}+`} icon={Users} />
-              <StatCard label="ভেরিফায়েড donor" value={`${stats.totalDonors}+`} icon={BadgeCheck} />
-              <StatCard label="সক্রিয় অনুরোধ" value={`${stats.activeRequests}`} icon={Siren} />
-            </div>
+      <section className="container-shell py-16">
+        <div className="rounded-[2rem] border border-primary/10 bg-[#fff1f1] px-6 py-10 shadow-soft sm:px-8 lg:px-12">
+          <div className="mx-auto max-w-4xl space-y-3 text-center">
+            <h2 className="font-display text-3xl font-semibold tracking-tight text-primary sm:text-4xl">আমাদের অর্জন</h2>
+            <p className="text-sm leading-7 text-muted-foreground sm:text-base">
+              আমাদের অর্জনের গল্প দেখুন, জীবন বাঁচানো, দাতা সংযোগ এবং রক্তদানের মাধ্যমে কমিউনিটিকে আরও শক্তিশালী করার যাত্রা।
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <StatCard label="মোট ব্যবহারকারী" value={`${stats.totalUsers}+`} icon={Users} />
+            <StatCard label="ভেরিফায়েড donor" value={`${stats.totalDonors}+`} icon={BadgeCheck} />
+            <StatCard label="সক্রিয় অনুরোধ" value={`${stats.activeRequests}`} icon={Siren} />
+            <StatCard label="সম্পন্ন অনুরোধ" value={`${stats.fulfilledRequests}+`} icon={HeartPulse} />
           </div>
         </div>
       </section>

@@ -1,6 +1,7 @@
 import { unstable_noStore as noStore } from "next/cache";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { createPublicSupabaseClient } from "@/lib/supabase/public";
+import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 import { getAvailabilityFromLastDonation } from "@/lib/utils";
 import type {
   BloodBank,
@@ -26,6 +27,7 @@ export async function getHomeData() {
   noStore();
 
   const supabase = createPublicSupabaseClient();
+  const adminSupabase = createAdminSupabaseClient();
   if (!supabase) {
     return {
       donors: [] as DonorProfile[],
@@ -53,13 +55,13 @@ export async function getHomeData() {
     supabase.from("blood_requests").select("*").in("status", ["Open", "In progress"]).order("created_at", { ascending: false }).limit(3),
     supabase.from("campaigns").select("*").order("event_date", { ascending: true }).limit(2),
     supabase.from("blogs").select("*").order("published_at", { ascending: false }).limit(3),
-    supabase.from("users").select("*", { count: "exact", head: true }),
-    supabase.from("donor_profiles").select("*", { count: "exact", head: true }),
-    supabase.from("blood_requests").select("*", { count: "exact", head: true }).in("status", ["Open", "In progress"]),
-    supabase.from("blood_requests").select("*", { count: "exact", head: true }).eq("status", "Fulfilled"),
-    supabase.from("blood_banks").select("*", { count: "exact", head: true }),
-    supabase.from("blogs").select("*", { count: "exact", head: true }),
-    supabase.from("campaigns").select("*", { count: "exact", head: true })
+    (adminSupabase ?? supabase).from("users").select("*", { count: "exact", head: true }),
+    (adminSupabase ?? supabase).from("donor_profiles").select("*", { count: "exact", head: true }),
+    (adminSupabase ?? supabase).from("blood_requests").select("*", { count: "exact", head: true }).in("status", ["Open", "In progress"]),
+    (adminSupabase ?? supabase).from("blood_requests").select("*", { count: "exact", head: true }).eq("status", "Fulfilled"),
+    (adminSupabase ?? supabase).from("blood_banks").select("*", { count: "exact", head: true }),
+    (adminSupabase ?? supabase).from("blogs").select("*", { count: "exact", head: true }),
+    (adminSupabase ?? supabase).from("campaigns").select("*", { count: "exact", head: true })
   ]);
 
   return {
