@@ -2,13 +2,15 @@ import { cn } from "@/lib/utils";
 
 interface PageShellProps {
   title: string;
-  description: string;
+  description?: string;
   eyebrow?: string;
   children: React.ReactNode;
   className?: string;
 }
 
-export function PageShell({ title, description, eyebrow, children, className }: PageShellProps) {
+export function PageShell(props: PageShellProps) {
+  const { title, eyebrow, children, className } = props;
+
   return (
     <div className={cn("page-backdrop", className)}>
       <div className="container-shell py-10 sm:py-12 lg:py-16">
@@ -22,7 +24,6 @@ export function PageShell({ title, description, eyebrow, children, className }: 
             <h1 className="font-display text-3xl font-semibold tracking-tight text-balance sm:text-4xl lg:text-5xl">
               {title}
             </h1>
-            <p className="text-base leading-8 text-muted-foreground sm:text-lg">{description}</p>
           </div>
         </div>
         {children}

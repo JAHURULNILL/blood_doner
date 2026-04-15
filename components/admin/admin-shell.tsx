@@ -8,7 +8,9 @@ interface AdminShellProps {
   actions?: React.ReactNode;
 }
 
-export function AdminShell({ currentPath, title, description, children, actions }: AdminShellProps) {
+export function AdminShell(props: AdminShellProps) {
+  const { currentPath, title, children, actions } = props;
+
   return (
     <div className="page-backdrop min-h-screen">
       <div className="container-shell py-8">
@@ -19,7 +21,6 @@ export function AdminShell({ currentPath, title, description, children, actions 
                 অ্যাডমিন কনসোল
               </div>
               <h1 className="font-display text-3xl font-semibold tracking-tight">{title}</h1>
-              {description ? <p className="max-w-2xl text-muted-foreground">{description}</p> : null}
             </div>
             {actions}
           </div>

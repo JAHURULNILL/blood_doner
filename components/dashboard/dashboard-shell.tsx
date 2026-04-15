@@ -8,7 +8,9 @@ interface DashboardShellProps {
   children: React.ReactNode;
 }
 
-export function DashboardShell({ currentPath, title, description, actions, children }: DashboardShellProps) {
+export function DashboardShell(props: DashboardShellProps) {
+  const { currentPath, title, actions, children } = props;
+
   return (
     <div className="page-backdrop min-h-screen">
       <div className="container-shell py-8">
@@ -19,7 +21,6 @@ export function DashboardShell({ currentPath, title, description, actions, child
                 ব্যক্তিগত ড্যাশবোর্ড
               </div>
               <h1 className="font-display text-3xl font-semibold tracking-tight">{title}</h1>
-              {description ? <p className="max-w-2xl text-muted-foreground">{description}</p> : null}
             </div>
             {actions}
           </div>

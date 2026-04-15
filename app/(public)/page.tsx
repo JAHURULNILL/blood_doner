@@ -132,15 +132,9 @@ export default async function HomePage() {
       <section className="container-shell py-16">
         <div className="premium-card px-6 py-10 sm:px-8 lg:px-12 lg:py-12">
           <div className="mx-auto max-w-3xl text-center">
-            <div className="inline-flex rounded-full border border-primary/15 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary">
-              সাধারণ জিজ্ঞাসাবলি
-            </div>
-            <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+            <h2 className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
               সাধারণ জিজ্ঞাসাবলি
             </h2>
-            <p className="mt-3 text-sm leading-7 text-muted-foreground sm:text-base">
-              রক্তদানের আগে জানা দরকার এমন কয়েকটি ছোট প্রশ্ন ও সংক্ষিপ্ত উত্তর।
-            </p>
           </div>
 
           <div className="mx-auto mt-8 grid max-w-4xl gap-4 sm:gap-5">
