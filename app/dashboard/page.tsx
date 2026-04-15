@@ -22,7 +22,6 @@ export default async function DashboardPage() {
     <DashboardShell
       currentPath="/dashboard"
       title={`স্বাগতম, ${user.full_name}`}
-      description="আপনার donor profile, request activity, donation overview এবং quick actions একসাথে দেখুন।"
       actions={
         <Button asChild>
           <Link href="/dashboard/profile/edit" prefetch>
@@ -49,6 +48,7 @@ export default async function DashboardPage() {
             actionHref="/dashboard/profile/edit"
           />
         )}
+
         <Card className="border-border/70">
           <CardContent className="space-y-4 p-6">
             <h2 className="font-display text-xl font-semibold">দ্রুত কাজ</h2>
