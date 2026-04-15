@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import type { UserRecord } from "@/lib/types";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { ensureUserRecord } from "@/lib/user-sync";
 
 export async function getCurrentUser(): Promise<UserRecord | null> {
   const supabase = await createServerSupabaseClient();
@@ -15,7 +16,21 @@ export async function getCurrentUser(): Promise<UserRecord | null> {
 
   if (!user) return null;
 
-  const { data } = await supabase.from("users").select("*").eq("id", user.id).single();
+  const { data } = await supabase.from("users").select("*").eq("id", user.id).maybeSingle();
+
+  if (!data) {
+    await ensureUserRecord({
+      user,
+      fullName: user.user_metadata.full_name,
+      phone: user.user_metadata.phone
+    });
+
+    const { data: syncedData } = await supabase.from("users").select("*").eq("id", user.id).maybeSingle();
+
+    if (syncedData) {
+      return syncedData;
+    }
+  }
 
   return (
     data ?? {
