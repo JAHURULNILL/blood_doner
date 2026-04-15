@@ -6,7 +6,6 @@ import { useEffect, useState, useTransition } from "react";
 import {
   ArrowUpRight,
   Droplets,
-  HeartHandshake,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -100,18 +99,15 @@ export function NavbarClient() {
   return (
     <>
       <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-2xl">
-        <div className="container-shell flex h-[4.75rem] items-center justify-between gap-5">
+        <div className="container-shell flex h-[4.4rem] items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-[1.35rem] bg-primary/10 text-primary shadow-sm ring-1 ring-primary/10">
               <Droplets className="h-5 w-5" />
             </div>
-            <div>
-              <p className="font-display text-lg font-semibold tracking-tight">{siteConfig.name}</p>
-              <p className="text-xs text-muted-foreground">বিশ্বাসযোগ্য রক্ত সহায়তা নেটওয়ার্ক</p>
-            </div>
+            <p className="font-display text-lg font-semibold tracking-tight">{siteConfig.name}</p>
           </Link>
 
-          <nav className="hidden items-center gap-7 xl:flex">
+          <nav className="hidden items-center gap-6 lg:flex">
             {publicNavItems.map((item) => (
               <Link
                 key={item.href}
@@ -124,12 +120,7 @@ export function NavbarClient() {
             ))}
           </nav>
 
-          <div className="hidden items-center gap-3 lg:flex">
-            <div className="hidden items-center gap-2 rounded-full border border-border/70 bg-white/85 px-4 py-2 text-xs text-muted-foreground xl:inline-flex">
-              <HeartHandshake className="h-3.5 w-3.5 text-primary" />
-              community-first সহায়তা
-            </div>
-
+          <div className="hidden items-center gap-2 lg:flex">
             {authState === "loading" ? (
               <div className="flex items-center gap-3">
                 <div className="h-10 w-28 animate-pulse rounded-full bg-secondary" />
@@ -197,10 +188,7 @@ export function NavbarClient() {
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
               <Droplets className="h-4 w-4" />
             </div>
-            <div>
-              <p className="font-display text-lg font-semibold">{siteConfig.name}</p>
-              <p className="text-xs text-muted-foreground">দ্রুত donor সংযোগ</p>
-            </div>
+            <p className="font-display text-lg font-semibold">{siteConfig.name}</p>
           </div>
           <Button size="icon" variant="ghost" onClick={() => setOpen(false)}>
             <X className="h-4 w-4" />
