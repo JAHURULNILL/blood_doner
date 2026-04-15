@@ -98,7 +98,7 @@ export function NavbarClient() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-2xl">
+      <header className="sticky top-0 z-50 border-b border-primary/10 bg-[rgba(255,249,249,0.92)] backdrop-blur-2xl">
         <div className="container-shell flex h-[4.4rem] items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-[1.35rem] bg-primary/10 text-primary shadow-sm ring-1 ring-primary/10">
@@ -163,7 +163,7 @@ export function NavbarClient() {
           </div>
 
           <div className="flex items-center gap-2 lg:hidden">
-            <Button size="icon" variant="outline" aria-label="Menu" onClick={() => setOpen(true)}>
+            <Button size="icon" variant="outline" className="bg-white/90" aria-label="Menu" onClick={() => setOpen(true)}>
               <Menu className="h-4 w-4" />
             </Button>
           </div>
