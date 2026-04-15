@@ -2,14 +2,14 @@ import Link from "next/link";
 import { BadgeCheck, Check, HeartPulse, Siren, Users } from "lucide-react";
 import { getHomeData } from "@/lib/data";
 import { BlogCard } from "@/components/cards/blog-card";
-import { CampaignCard } from "@/components/cards/campaign-card";
 import { StatCard } from "@/components/cards/stat-card";
 import { SectionHeader } from "@/components/sections/section-header";
+import { MedicalCampCarousel } from "@/components/sections/medical-camp-carousel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default async function HomePage() {
-  const { campaigns, blogs, stats } = await getHomeData();
+  const { blogs, stats } = await getHomeData();
   const benefitItems = [
     "হৃদরোগের ঝুঁকি কমাতে সহায়তা করে",
     "শরীরে নতুন রক্তকোষ তৈরিতে ভূমিকা রাখে",
@@ -94,18 +94,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="container-shell space-y-8 py-16">
-        <SectionHeader
-          eyebrow="চলমান ক্যাম্পেইন"
-          title="সচেতনতা, donor drive এবং community উপস্থিতি"
-          description="রক্তদান সচেতনতা ও donor enrollment কার্যক্রমে অংশ নিতে upcoming campaign দেখুন।"
-        />
-        <div className="grid gap-6 lg:grid-cols-2">
-          {campaigns.map((campaign) => (
-            <CampaignCard key={campaign.id} campaign={campaign} />
-          ))}
-        </div>
-      </section>
+      <MedicalCampCarousel />
 
       <section className="container-shell space-y-8 py-16">
         <SectionHeader
