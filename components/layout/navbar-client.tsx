@@ -98,13 +98,13 @@ export function NavbarClient() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-primary/10 bg-[rgba(255,249,249,0.92)] backdrop-blur-2xl">
+      <header className="sticky top-0 z-50 border-b border-[#b41520] bg-primary text-primary-foreground shadow-[0_12px_32px_-24px_rgba(190,24,38,0.65)]">
         <div className="container-shell flex h-[4.4rem] items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-[1.35rem] bg-primary/10 text-primary shadow-sm ring-1 ring-primary/10">
+            <div className="flex h-11 w-11 items-center justify-center rounded-[1.35rem] bg-white/12 text-white shadow-sm ring-1 ring-white/15">
               <Droplets className="h-5 w-5" />
             </div>
-            <p className="font-display text-lg font-semibold tracking-tight">{siteConfig.name}</p>
+            <p className="font-display text-lg font-semibold tracking-tight text-white">{siteConfig.name}</p>
           </Link>
 
           <nav className="hidden items-center gap-6 lg:flex">
@@ -113,7 +113,7 @@ export function NavbarClient() {
                 key={item.href}
                 href={item.href}
                 prefetch
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                className="text-sm font-medium text-white/95 transition-colors hover:text-white"
               >
                 {item.label}
               </Link>
@@ -128,31 +128,31 @@ export function NavbarClient() {
               </div>
             ) : user ? (
               <>
-                <Button variant="ghost" asChild>
+                <Button variant="ghost" asChild className="text-white hover:bg-white/10 hover:text-white">
                   <Link href={dashboardHref} prefetch>
                     <LayoutDashboard className="h-4 w-4" />
                     {user.role === "admin" ? "অ্যাডমিন" : "ড্যাশবোর্ড"}
                   </Link>
                 </Button>
-                <Button variant="outline" asChild className="border-border/80 bg-white/80">
+                <Button variant="outline" asChild className="border-white/25 bg-white/10 text-white hover:bg-white/16 hover:text-white">
                   <Link href="/dashboard/profile" prefetch>
                     <UserRound className="h-4 w-4" />
                     {user.full_name.split(" ")[0]}
                   </Link>
                 </Button>
-                <Button onClick={handleLogout} disabled={pending} className="shadow-sm">
+                <Button onClick={handleLogout} disabled={pending} className="border border-white/20 bg-white/12 text-white shadow-sm hover:bg-white/18">
                   <LogOut className="h-4 w-4" />
                   {pending ? "অপেক্ষা..." : "লগআউট"}
                 </Button>
               </>
             ) : (
               <>
-                <Button variant="ghost" asChild>
+                <Button variant="ghost" asChild className="text-white hover:bg-white/10 hover:text-white">
                   <Link href="/login" prefetch>
                     লগইন
                   </Link>
                 </Button>
-                <Button asChild className="shadow-sm">
+                <Button asChild className="border border-white/20 bg-white/12 text-white shadow-sm hover:bg-white/18">
                   <Link href="/register" prefetch>
                     রেজিস্ট্রেশন
                     <ArrowUpRight className="h-4 w-4" />
@@ -163,7 +163,13 @@ export function NavbarClient() {
           </div>
 
           <div className="flex items-center gap-2 lg:hidden">
-            <Button size="icon" variant="outline" className="bg-white/90" aria-label="Menu" onClick={() => setOpen(true)}>
+            <Button
+              size="icon"
+              variant="outline"
+              className="border-white/25 bg-white/12 text-white hover:bg-white/18 hover:text-white"
+              aria-label="Menu"
+              onClick={() => setOpen(true)}
+            >
               <Menu className="h-4 w-4" />
             </Button>
           </div>
