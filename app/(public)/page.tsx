@@ -2,19 +2,34 @@ import Link from "next/link";
 import { BadgeCheck, Check, HeartPulse, Siren, Users } from "lucide-react";
 import { getHomeData } from "@/lib/data";
 import { StatCard } from "@/components/cards/stat-card";
-import { SectionHeader } from "@/components/sections/section-header";
 import { MedicalCampCarousel } from "@/components/sections/medical-camp-carousel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default async function HomePage() {
   const { stats } = await getHomeData();
+
   const benefitItems = [
     "হৃদরোগের ঝুঁকি কমাতে সহায়তা করে",
     "শরীরে নতুন রক্তকোষ তৈরিতে ভূমিকা রাখে",
     "নিয়মিত স্বাস্থ্য পরীক্ষার সুযোগ বাড়ায়",
-    "মানসিক তৃপ্তি ও সামাজিক দায়িত্ববোধ জাগায়"
+    "মানসিক তৃপ্তি ও সামাজিক দায়বদ্ধতা জাগায়"
   ];
+
+  const faqItems = [
+    [
+      "কে রক্ত দিতে পারেন?",
+      "সাধারণত ১৮-৬০ বছর বয়সী, সুস্থ এবং নির্ধারিত ওজনের ব্যক্তি রক্ত দিতে পারেন।"
+    ],
+    [
+      "নিরাপদ রক্তদানের নিয়ম কী?",
+      "রক্তদানের আগে পর্যাপ্ত ঘুম, ভালো খাবার ও পরিচ্ছন্ন পরিবেশ নিশ্চিত করে চিকিৎসকের পরামর্শ মেনে চলা উচিত।"
+    ],
+    [
+      "কতদিন পর আবার রক্ত দেওয়া যায়?",
+      "সাধারণভাবে অন্তত ৩ মাসের ব্যবধান রাখা ভালো।"
+    ]
+  ] as const;
 
   return (
     <div className="pb-6">
@@ -96,23 +111,33 @@ export default async function HomePage() {
       <MedicalCampCarousel />
 
       <section className="container-shell py-16">
-        <div className="premium-card grid gap-8 p-8 lg:grid-cols-[1fr_0.95fr] lg:p-12">
-          <SectionHeader
-            eyebrow="সাধারণ জিজ্ঞাসা"
-            title="নিরাপদ ও দায়িত্বশীল রক্তদানের জন্য দরকারি তথ্য"
-            description="যোগ্যতা, donation gap, donor response এবং initial safety understanding-এর জন্য সংক্ষিপ্ত উত্তর।"
-          />
+        <div className="premium-card px-6 py-10 sm:px-8 lg:px-12 lg:py-12">
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="inline-flex rounded-full border border-primary/15 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary">
+              সাধারণ জিজ্ঞাসাবলি
+            </div>
+            <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+              সাধারণ জিজ্ঞাসাবলি
+            </h2>
+            <p className="mt-3 text-sm leading-7 text-muted-foreground sm:text-base">
+              রক্তদানের আগে জানা দরকার এমন কয়েকটি ছোট প্রশ্ন ও সংক্ষিপ্ত উত্তর।
+            </p>
+          </div>
 
-          <div className="grid gap-4">
-            {[
-              ["কে রক্ত দিতে পারেন?", "সাধারণত ১৮-৬০ বছর বয়সী, সুস্থ এবং নির্ধারিত ওজনের ব্যক্তি রক্ত দিতে পারেন।"],
-              ["কতদিন পর আবার রক্ত দেওয়া যায়?", "সাধারণভাবে অন্তত ৩ মাসের ব্যবধান রাখা ভালো।"],
-              ["জরুরি donor response কীভাবে কাজ করে?", "request detail page থেকে donor interest জানানো হয় এবং যোগাযোগের পথ সহজ করা হয়।"]
-            ].map(([title, body]) => (
-              <Card key={title} className="border-border/70 bg-white shadow-sm">
-                <CardContent className="space-y-2 p-5">
-                  <h3 className="font-display text-lg font-semibold">{title}</h3>
-                  <p className="text-sm leading-7 text-muted-foreground">{body}</p>
+          <div className="mx-auto mt-8 grid max-w-4xl gap-4 sm:gap-5">
+            {faqItems.map(([title, body], index) => (
+              <Card
+                key={title}
+                className="overflow-hidden border border-primary/10 bg-white shadow-[0_20px_45px_-32px_rgba(15,23,42,0.22)]"
+              >
+                <CardContent className="flex gap-4 p-5 sm:p-6">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
+                    {index + 1}
+                  </div>
+                  <div className="space-y-1.5">
+                    <h3 className="font-display text-lg font-semibold text-foreground sm:text-xl">{title}</h3>
+                    <p className="text-sm leading-7 text-muted-foreground sm:text-[15px]">{body}</p>
+                  </div>
                 </CardContent>
               </Card>
             ))}
