@@ -2,13 +2,10 @@ import Link from "next/link";
 import {
   ArrowRight,
   BadgeCheck,
-  Clock3,
-  Search,
-  ShieldPlus,
   Siren,
   Users
 } from "lucide-react";
-import { bloodGroups, divisions } from "@/lib/constants";
+import { bloodGroups } from "@/lib/constants";
 import { getHomeData } from "@/lib/data";
 import { BlogCard } from "@/components/cards/blog-card";
 import { CampaignCard } from "@/components/cards/campaign-card";
@@ -18,8 +15,6 @@ import { StatCard } from "@/components/cards/stat-card";
 import { SectionHeader } from "@/components/sections/section-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
 
 export default async function HomePage() {
   const { donors, requests, campaigns, blogs, stats } = await getHomeData();
@@ -31,15 +26,11 @@ export default async function HomePage() {
         <div className="absolute inset-x-0 top-0 h-52 bg-[radial-gradient(circle_at_top,rgba(127,29,29,0.08),transparent_62%)]" />
 
         <div className="container-shell relative py-12 sm:py-16 lg:py-20">
-          <div className="grid gap-8 xl:grid-cols-[1.08fr_0.92fr]">
+          <div className="space-y-8">
             <div className="space-y-8">
-              <div className="inline-flex rounded-full border border-primary/15 bg-primary/6 px-4 py-1.5 text-sm text-primary">
-                রক্তদাতা খুঁজুন, রক্তের অনুরোধ দিন
-              </div>
-
               <div className="space-y-5">
                 <h1 className="max-w-4xl font-display text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-                  একটি রক্তদান, একটি জীবন বাঁচাতে পারে
+                  একটি রক্তদান, জীবন বাঁচাতে পারে
                 </h1>
                 <p className="max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">
                   প্রয়োজন হলে দ্রুত রক্তদাতা খুঁজুন, আর রক্তদাতা হলে নিজের তথ্য যুক্ত করে অন্যের পাশে দাঁড়ান।
@@ -65,56 +56,6 @@ export default async function HomePage() {
                 <StatCard label="ভেরিফায়েড donor" value={`${stats.totalDonors}+`} icon={BadgeCheck} />
                 <StatCard label="সক্রিয় অনুরোধ" value={`${stats.activeRequests}`} icon={Siren} />
               </div>
-            </div>
-
-            <div className="space-y-5">
-              <Card className="hero-glow border-border/70 shadow-soft">
-                <CardContent className="space-y-6 p-6 lg:p-7">
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-primary">দ্রুত donor search</p>
-                    <h2 className="font-display text-2xl font-semibold tracking-tight">রক্তের গ্রুপ ও লোকেশন দিয়ে খুঁজুন</h2>
-                    <p className="text-sm leading-7 text-muted-foreground">
-                      গ্রুপ, বিভাগ, জেলা এবং এলাকা দিয়ে দ্রুত উপযুক্ত donor খুঁজে নিন।
-                    </p>
-                  </div>
-
-                  <form action="/donors" className="grid gap-4">
-                    <Select name="bloodGroup" defaultValue="">
-                      <option value="">রক্তের গ্রুপ</option>
-                      {bloodGroups.map((group) => (
-                        <option key={group} value={group}>
-                          {group}
-                        </option>
-                      ))}
-                    </Select>
-                    <Select name="division" defaultValue="">
-                      <option value="">বিভাগ</option>
-                      {divisions.map((division) => (
-                        <option key={division} value={division}>
-                          {division}
-                        </option>
-                      ))}
-                    </Select>
-                    <Input name="district" placeholder="জেলা লিখুন" />
-                    <Input name="upazila" placeholder="উপজেলা / এলাকা" />
-                    <Button type="submit" className="w-full shadow-sm">
-                      <Search className="h-4 w-4" />
-                      অনুসন্ধান করুন
-                    </Button>
-                  </form>
-
-                  <div className="grid gap-3 rounded-[1.5rem] bg-white/80 p-4 text-sm text-muted-foreground">
-                    <p className="inline-flex items-start gap-2">
-                      <ShieldPlus className="mt-0.5 h-4 w-4 text-primary" />
-                      visitor-এর জন্য ফোন নম্বর আংশিক গোপন রাখা হয়
-                    </p>
-                    <p className="inline-flex items-start gap-2">
-                      <Clock3 className="mt-0.5 h-4 w-4 text-primary" />
-                      সর্বশেষ রক্তদানের তথ্য দেখে donor readiness বোঝা যায়
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           </div>
         </div>
