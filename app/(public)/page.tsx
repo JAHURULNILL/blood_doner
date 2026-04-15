@@ -30,7 +30,7 @@ export default async function HomePage() {
             <div className="space-y-8">
               <div className="space-y-5">
                 <h1 className="max-w-4xl font-display text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-                  একটি রক্তদান, জীবন বাঁচাতে পারে
+                  আপনার রক্তদান, একটি জীবন বাঁচাতে পারে
                 </h1>
                 <p className="max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">
                   প্রয়োজন হলে দ্রুত রক্তদাতা খুঁজুন, আর রক্তদাতা হলে নিজের তথ্য যুক্ত করে অন্যের পাশে দাঁড়ান।
