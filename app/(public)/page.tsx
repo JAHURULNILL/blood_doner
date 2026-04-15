@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { BadgeCheck, Check, HeartPulse, Siren, Users } from "lucide-react";
 import { getHomeData } from "@/lib/data";
-import { StatCard } from "@/components/cards/stat-card";
 import { MedicalCampCarousel } from "@/components/sections/medical-camp-carousel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,6 +13,13 @@ export default async function HomePage() {
     "শরীরে নতুন রক্তকোষ তৈরিতে ভূমিকা রাখে",
     "নিয়মিত স্বাস্থ্য পরীক্ষার সুযোগ বাড়ায়",
     "মানসিক তৃপ্তি ও সামাজিক দায়বদ্ধতা জাগায়"
+  ];
+
+  const achievementItems = [
+    { label: "মোট ব্যবহারকারী", value: `${stats.totalUsers}+`, icon: Users },
+    { label: "ভেরিফায়েড donor", value: `${stats.totalDonors}+`, icon: BadgeCheck },
+    { label: "সক্রিয় অনুরোধ", value: `${stats.activeRequests}`, icon: Siren },
+    { label: "সম্পন্ন অনুরোধ", value: `${stats.fulfilledRequests}+`, icon: HeartPulse }
   ];
 
   const faqItems = [
@@ -90,20 +96,33 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="container-shell py-16">
-        <div className="rounded-[2rem] border border-primary/10 bg-[#fff1f1] px-6 py-10 shadow-soft sm:px-8 lg:px-12">
-          <div className="mx-auto max-w-4xl space-y-3 text-center">
-            <h2 className="font-display text-3xl font-semibold tracking-tight text-primary sm:text-4xl">আমাদের অর্জন</h2>
-            <p className="text-sm leading-7 text-muted-foreground sm:text-base">
-              আমাদের অর্জনের গল্প দেখুন, জীবন বাঁচানো, দাতা সংযোগ এবং রক্তদানের মাধ্যমে কমিউনিটিকে আরও শক্তিশালী করার যাত্রা।
-            </p>
-          </div>
+      <section className="container-shell py-10 sm:py-12">
+        <div className="rounded-[1.75rem] border border-primary/10 bg-[#fff1f1] px-5 py-6 shadow-soft sm:px-7 sm:py-7 lg:px-8">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-8">
+            <div className="shrink-0">
+              <h2 className="font-display text-2xl font-semibold tracking-tight text-primary sm:text-3xl">
+                আমাদের অর্জন
+              </h2>
+            </div>
 
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <StatCard label="মোট ব্যবহারকারী" value={`${stats.totalUsers}+`} icon={Users} />
-            <StatCard label="ভেরিফায়েড donor" value={`${stats.totalDonors}+`} icon={BadgeCheck} />
-            <StatCard label="সক্রিয় অনুরোধ" value={`${stats.activeRequests}`} icon={Siren} />
-            <StatCard label="সম্পন্ন অনুরোধ" value={`${stats.fulfilledRequests}+`} icon={HeartPulse} />
+            <div className="grid flex-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              {achievementItems.map(({ label, value, icon: Icon }) => (
+                <div
+                  key={label}
+                  className="rounded-[1.35rem] border border-primary/10 bg-white/80 px-4 py-4 shadow-[0_18px_35px_-28px_rgba(15,23,42,0.25)]"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium text-muted-foreground sm:text-sm">{label}</p>
+                      <p className="font-display text-3xl font-semibold tracking-tight text-primary">{value}</p>
+                    </div>
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                      <Icon className="h-4.5 w-4.5" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
