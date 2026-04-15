@@ -10,7 +10,6 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
-  ShieldCheck,
   UserRound,
   X
 } from "lucide-react";
@@ -100,22 +99,6 @@ export function NavbarClient() {
 
   return (
     <>
-      <div className="border-b border-border/70 bg-white/75">
-        <div className="container-shell flex h-10 items-center justify-between gap-4 text-[11px] text-muted-foreground sm:text-xs">
-          <p className="hidden sm:block">নিরাপদ donor coordination, verified requests এবং দায়িত্বশীল community response</p>
-          <div className="flex items-center gap-4">
-            <span className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-2.5 py-1 text-emerald-700">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
-              সক্রিয় অনুরোধ পর্যবেক্ষণ
-            </span>
-            <span className="hidden items-center gap-2 sm:inline-flex">
-              <ShieldCheck className="h-3.5 w-3.5 text-primary" />
-              চিকিৎসা-সংবেদনশীল সাপোর্ট
-            </span>
-          </div>
-        </div>
-      </div>
-
       <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-2xl">
         <div className="container-shell flex h-[4.75rem] items-center justify-between gap-5">
           <Link href="/" className="flex items-center gap-3">
