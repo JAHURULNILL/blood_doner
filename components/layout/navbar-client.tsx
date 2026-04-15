@@ -259,10 +259,6 @@ export function NavbarClient() {
             </>
           )}
         </div>
-
-        <div className="mt-8 rounded-[1.75rem] border border-border/70 bg-secondary/60 p-4 text-sm leading-7 text-muted-foreground">
-          জরুরি রক্তের প্রয়োজন হলে verified request flow ব্যবহার করুন এবং donor profile-এর donation gap দেখে যোগাযোগ করুন।
-        </div>
       </div>
     </>
   );
