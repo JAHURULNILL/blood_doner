@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { BadgeCheck, Check, Siren, Users } from "lucide-react";
-import { bloodGroups } from "@/lib/constants";
 import { getHomeData } from "@/lib/data";
 import { BlogCard } from "@/components/cards/blog-card";
 import { CampaignCard } from "@/components/cards/campaign-card";
@@ -82,26 +81,6 @@ export default async function HomePage() {
               <StatCard label="সক্রিয় অনুরোধ" value={`${stats.activeRequests}`} icon={Siren} />
             </div>
           </div>
-        </div>
-      </section>
-
-      <section className="container-shell space-y-8 py-16">
-        <SectionHeader
-          eyebrow="রক্তের গ্রুপ"
-          title="গ্রুপভিত্তিক খোঁজা আরও সহজ"
-          description="যে গ্রুপ দরকার, সেটি বেছে নিয়ে donor search-এ গিয়ে সরাসরি তালিকা দেখুন।"
-        />
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {bloodGroups.map((group) => (
-            <Card key={group} className="border-border/70 bg-white/90 shadow-soft">
-              <CardContent className="space-y-3 p-6">
-                <div className="font-display text-4xl font-semibold tracking-tight text-primary">{group}</div>
-                <p className="text-sm leading-7 text-muted-foreground">
-                  এই গ্রুপের রক্তদাতা খুঁজতে donor search page-এ গিয়ে location filter ব্যবহার করুন।
-                </p>
-              </CardContent>
-            </Card>
-          ))}
         </div>
       </section>
 
