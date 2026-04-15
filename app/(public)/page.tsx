@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { BadgeCheck, Check, HeartPulse, Siren, Users } from "lucide-react";
 import { getHomeData } from "@/lib/data";
-import { BlogCard } from "@/components/cards/blog-card";
 import { StatCard } from "@/components/cards/stat-card";
 import { SectionHeader } from "@/components/sections/section-header";
 import { MedicalCampCarousel } from "@/components/sections/medical-camp-carousel";
@@ -9,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default async function HomePage() {
-  const { blogs, stats } = await getHomeData();
+  const { stats } = await getHomeData();
   const benefitItems = [
     "হৃদরোগের ঝুঁকি কমাতে সহায়তা করে",
     "শরীরে নতুন রক্তকোষ তৈরিতে ভূমিকা রাখে",
@@ -95,19 +94,6 @@ export default async function HomePage() {
       </section>
 
       <MedicalCampCarousel />
-
-      <section className="container-shell space-y-8 py-16">
-        <SectionHeader
-          eyebrow="সাম্প্রতিক ব্লগ"
-          title="সচেতনতা ও নিরাপদ রক্তদানের গাইড"
-          description="eligibility, donor safety এবং সচেতনতা বিষয়ে বাংলা awareness content।"
-        />
-        <div className="grid gap-6 lg:grid-cols-3">
-          {blogs.map((blog) => (
-            <BlogCard key={blog.id} post={blog} />
-          ))}
-        </div>
-      </section>
 
       <section className="container-shell py-16">
         <div className="premium-card grid gap-8 p-8 lg:grid-cols-[1fr_0.95fr] lg:p-12">

@@ -1,4 +1,4 @@
-import { Activity, FileWarning, Hospital, Newspaper, Users } from "lucide-react";
+import { Activity, FileWarning, Hospital, Users } from "lucide-react";
 import { requireAdmin } from "@/lib/auth";
 import { getAdminSummary, getReports } from "@/lib/data";
 import { AdminShell } from "@/components/admin/admin-shell";
@@ -14,14 +14,15 @@ export default async function AdminDashboardPage() {
     <AdminShell
       currentPath="/admin"
       title="অ্যাডমিন ড্যাশবোর্ড"
-      description="প্ল্যাটফর্ম analytics, moderation alerts, request status এবং content growth এক নজরে দেখুন।"
+      description="প্ল্যাটফর্ম analytics, moderation alerts, request status এবং overall activity এক নজরে দেখুন।"
     >
       <div className="grid gap-4 xl:grid-cols-4">
         <StatCard label="মোট ইউজার" value={`${summary.totalUsers}`} icon={Users} />
         <StatCard label="সক্রিয় রিকোয়েস্ট" value={`${summary.activeRequests}`} icon={Activity} />
         <StatCard label="ব্লাড ব্যাংক" value={`${summary.bloodBankCount}`} icon={Hospital} />
-        <StatCard label="ব্লগ ও ক্যাম্পেইন" value={`${summary.blogCount + summary.campaignCount}`} icon={Newspaper} />
+        <StatCard label="ক্যাম্পেইন" value={`${summary.campaignCount}`} icon={Hospital} />
       </div>
+
       <Card className="border-border/70">
         <CardContent className="space-y-4 p-6">
           <h2 className="font-display text-xl font-semibold">মডারেশন অ্যালার্ট</h2>

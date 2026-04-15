@@ -16,11 +16,10 @@ export const urgencyLevels = ["Emergency", "Urgent", "Normal"] as const;
 export const requestStatuses = ["Open", "In progress", "Fulfilled", "Cancelled"] as const;
 
 export const publicNavItems = [
-  { label: "ডোনার খুঁজুন", href: "/donors" },
+  { label: "রক্তদাতা খুঁজুন", href: "/donors" },
   { label: "রক্তের অনুরোধ", href: "/requests" },
   { label: "ব্লাড ব্যাংক", href: "/blood-banks" },
   { label: "ক্যাম্পেইন", href: "/campaigns" },
-  { label: "ব্লগ", href: "/blog" },
   { label: "যোগাযোগ", href: "/contact" }
 ];
 
@@ -38,7 +37,6 @@ export const adminNavItems = [
   { label: "রিকোয়েস্ট ম্যানেজ", href: "/admin/requests", icon: Home },
   { label: "ব্লাড ব্যাংক", href: "/admin/blood-banks", icon: ShieldCheck },
   { label: "ক্যাম্পেইন", href: "/admin/campaigns", icon: ShieldCheck },
-  { label: "ব্লগ", href: "/admin/blogs", icon: ShieldCheck },
   { label: "রিপোর্ট", href: "/admin/reports", icon: ShieldCheck },
   { label: "ইউজার", href: "/admin/users", icon: UserRound }
 ];
