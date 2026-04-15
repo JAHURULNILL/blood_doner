@@ -1,11 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import {
   ArrowUpRight,
-  Droplets,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -101,8 +101,8 @@ export function NavbarClient() {
       <header className="sticky top-0 z-50 border-b border-[#b41520] bg-primary text-primary-foreground shadow-[0_12px_32px_-24px_rgba(190,24,38,0.65)]">
         <div className="container-shell flex h-[4.4rem] items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-[1.35rem] bg-white/12 text-white shadow-sm ring-1 ring-white/15">
-              <Droplets className="h-5 w-5" />
+            <div className="overflow-hidden rounded-[1.1rem] border border-white/18 bg-white shadow-sm ring-1 ring-white/15">
+              <Image src="/site-logo.jpg" alt={siteConfig.name} width={44} height={44} className="h-11 w-11 object-cover" priority />
             </div>
             <p className="font-display text-lg font-semibold tracking-tight text-white">{siteConfig.name}</p>
           </Link>
@@ -191,8 +191,8 @@ export function NavbarClient() {
       >
         <div className="mb-8 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-              <Droplets className="h-4 w-4" />
+            <div className="overflow-hidden rounded-2xl border border-primary/10 bg-white shadow-sm">
+              <Image src="/site-logo.jpg" alt={siteConfig.name} width={40} height={40} className="h-10 w-10 object-cover" priority />
             </div>
             <p className="font-display text-lg font-semibold">{siteConfig.name}</p>
           </div>
