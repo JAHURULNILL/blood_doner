@@ -12,8 +12,6 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
 }
 
-const INSTALL_DISMISS_KEY = "bera-install-dismissed";
-
 function urlBase64ToUint8Array(base64String: string) {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
@@ -84,6 +82,9 @@ export function PwaQuickActions() {
     const handleBeforeInstallPrompt = (event: Event) => {
       event.preventDefault();
       setDeferredPrompt(event as BeforeInstallPromptEvent);
+      if (isMobileDevice() && !isStandaloneMode()) {
+        setInstallVisible(true);
+      }
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
@@ -92,9 +93,6 @@ export function PwaQuickActions() {
 
   useEffect(() => {
     if (standalone || !mobileDevice || !deferredPrompt) return;
-
-    const dismissed = window.sessionStorage.getItem(INSTALL_DISMISS_KEY);
-    if (dismissed === "1") return;
 
     const timer = window.setTimeout(() => {
       setInstallVisible(true);
@@ -121,7 +119,6 @@ export function PwaQuickActions() {
 
   const dismissInstallModal = () => {
     setInstallVisible(false);
-    window.sessionStorage.setItem(INSTALL_DISMISS_KEY, "1");
   };
 
   const installApp = async () => {
@@ -134,7 +131,6 @@ export function PwaQuickActions() {
       toast.success("অ্যাপ ইন্সটল শুরু হয়েছে");
       setInstallVisible(false);
       setDeferredPrompt(null);
-      window.sessionStorage.removeItem(INSTALL_DISMISS_KEY);
       return;
     }
 
