@@ -1,13 +1,18 @@
 import { Home, LayoutDashboard, ShieldCheck, UserRound, Users2 } from "lucide-react";
 
 export const siteConfig = {
-  name: "রক্তদাতা",
+  name: "বেড়া রক্তদাতা ইউনিট",
   description:
     "প্রিমিয়াম, নির্ভরযোগ্য ও আধুনিক রক্তদাতা সংযোগ প্ল্যাটফর্ম। দ্রুত ডোনার খুঁজুন, রক্তের অনুরোধ প্রকাশ করুন এবং কমিউনিটিকে একসাথে রাখুন।",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://roktodaata.vercel.app",
   contactEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? "",
   contactPhone: process.env.NEXT_PUBLIC_SUPPORT_PHONE ?? "",
-  locationLabel: "বাংলাদেশভিত্তিক অনলাইন সমন্বয় প্ল্যাটফর্ম"
+  locationLabel: "বাংলাদেশভিত্তিক অনলাইন সমন্বয় প্ল্যাটফর্ম",
+  brand: {
+    top: "বেড়া",
+    middle: "রক্তদাতা",
+    bottom: "ইউনিট"
+  }
 };
 
 export const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"] as const;

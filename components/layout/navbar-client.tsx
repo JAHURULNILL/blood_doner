@@ -17,6 +17,7 @@ import { logoutAction } from "@/lib/actions/auth-actions";
 import { createClient } from "@/lib/supabase/client";
 import type { UserRecord } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { BrandText } from "@/components/layout/brand-text";
 import { Button } from "@/components/ui/button";
 
 type AuthState = "loading" | "ready";
@@ -104,7 +105,7 @@ export function NavbarClient() {
             <div className="overflow-hidden rounded-[1.1rem] border border-white/18 bg-white shadow-sm ring-1 ring-white/15">
               <Image src="/site-logo.jpg" alt={siteConfig.name} width={44} height={44} className="h-11 w-11 object-cover" priority />
             </div>
-            <p className="font-display text-lg font-semibold tracking-tight text-white">{siteConfig.name}</p>
+            <BrandText inverted compact />
           </Link>
 
           <nav className="hidden items-center gap-6 lg:flex">
@@ -194,7 +195,7 @@ export function NavbarClient() {
             <div className="overflow-hidden rounded-2xl border border-primary/10 bg-white shadow-sm">
               <Image src="/site-logo.jpg" alt={siteConfig.name} width={40} height={40} className="h-10 w-10 object-cover" priority />
             </div>
-            <p className="font-display text-lg font-semibold">{siteConfig.name}</p>
+            <BrandText compact />
           </div>
           <Button size="icon" variant="ghost" onClick={() => setOpen(false)}>
             <X className="h-4 w-4" />

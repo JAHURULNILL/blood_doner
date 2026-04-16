@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { publicNavItems, siteConfig } from "@/lib/constants";
+import { BrandText } from "@/components/layout/brand-text";
 
 const footerLinks = [
   ...publicNavItems,
@@ -12,7 +13,7 @@ export function Footer() {
     <footer className="mt-20 border-t border-slate-800 bg-[#0d1b2a] text-slate-100">
       <div className="container-shell py-12 sm:py-14">
         <div className="mx-auto max-w-4xl text-center">
-          <p className="font-display text-3xl font-semibold tracking-tight text-white">{siteConfig.name}</p>
+          <BrandText align="center" inverted className="mx-auto w-fit" />
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
             নির্ভরযোগ্য রক্তদাতা, জরুরি অনুরোধ এবং প্রয়োজনীয় যোগাযোগকে সহজ ও পরিচ্ছন্নভাবে এক জায়গায় রাখার প্ল্যাটফর্ম।
           </p>
