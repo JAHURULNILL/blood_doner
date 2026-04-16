@@ -38,24 +38,24 @@ export default async function HomePage() {
   ] as const;
 
   return (
-    <div className="pb-6">
-      <section className="relative overflow-hidden border-b border-border/70">
+    <div className="app-home-root pb-6">
+      <section className="app-home-hero relative overflow-hidden border-b border-border/70">
         <div className="absolute inset-0 ambient-grid opacity-[0.18]" />
         <div className="absolute inset-x-0 top-0 h-52 bg-[radial-gradient(circle_at_top,rgba(127,29,29,0.08),transparent_62%)]" />
 
         <div className="container-shell relative py-12 sm:py-16 lg:py-20">
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-start">
-            <div className="space-y-8">
-              <div className="space-y-5">
-                <h1 className="max-w-4xl font-display text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
+          <div className="app-home-hero-grid grid gap-8 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-start">
+            <div className="app-home-hero-copy space-y-8">
+              <div className="app-home-headline space-y-5">
+                <h1 className="app-home-title max-w-4xl font-display text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
                   আপনার এক ব্যাগ রক্ত, বাঁচাতে পারে একটি জীবন
                 </h1>
-                <p className="max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">
+                <p className="app-home-subtitle max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">
                   প্রয়োজন হলে দ্রুত রক্তদাতা খুঁজুন, আর রক্তদাতা হলে নিজের তথ্য যুক্ত করে অন্যের পাশে দাঁড়ান।
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-3">
+              <div className="app-home-actions flex flex-wrap gap-3">
                 <Button asChild size="lg" className="shadow-sm">
                   <Link href="/donors" prefetch>
                     রক্তদাতা খুঁজুন
@@ -67,22 +67,40 @@ export default async function HomePage() {
                   </Link>
                 </Button>
               </div>
+
+              <div className="app-home-shortcuts hidden grid-cols-3 gap-3">
+                <Link href="/donors" className="rounded-[1.3rem] border border-border/70 bg-white px-4 py-4 text-center text-sm font-medium shadow-soft">
+                  donor
+                  <br />
+                  খুঁজুন
+                </Link>
+                <Link href="/requests?create=1" className="rounded-[1.3rem] border border-border/70 bg-white px-4 py-4 text-center text-sm font-medium shadow-soft">
+                  রক্তের
+                  <br />
+                  অনুরোধ
+                </Link>
+                <Link href="/dashboard" className="rounded-[1.3rem] border border-border/70 bg-white px-4 py-4 text-center text-sm font-medium shadow-soft">
+                  আমার
+                  <br />
+                  অ্যাকাউন্ট
+                </Link>
+              </div>
             </div>
 
-            <Card className="border-primary/12 bg-white/95 shadow-[0_24px_60px_-36px_rgba(220,38,38,0.35)] lg:mt-6">
+            <Card className="app-home-benefits-card border-primary/12 bg-white/95 shadow-[0_24px_60px_-36px_rgba(220,38,38,0.35)] lg:mt-6">
               <CardContent className="space-y-6 p-6 sm:p-7">
                 <div className="space-y-3">
-                  <h2 className="font-display text-2xl font-semibold tracking-tight text-primary sm:text-[2rem]">
+                  <h2 className="app-home-benefits-title font-display text-2xl font-semibold tracking-tight text-primary sm:text-[2rem]">
                     রক্তদানের উপকারিতা
                   </h2>
-                  <p className="text-sm leading-7 text-muted-foreground sm:text-base">
+                  <p className="app-home-benefits-copy text-sm leading-7 text-muted-foreground sm:text-base">
                     রক্তদান শরীর ও মনের জন্য ইতিবাচক। নিয়মিত রক্তদান জীবন বাঁচানোর পাশাপাশি নিজেকেও সচেতন ও দায়িত্বশীল রাখে।
                   </p>
                 </div>
 
-                <div className="space-y-4">
+                <div className="app-home-benefits-list space-y-4">
                   {benefitItems.map((item) => (
-                    <div key={item} className="flex items-start gap-3">
+                    <div key={item} className="app-home-benefit-item flex items-start gap-3">
                       <div className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary">
                         <Check className="h-4 w-4" />
                       </div>
@@ -96,7 +114,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="container-shell py-10 sm:py-12">
+      <section className="app-home-achievements container-shell py-10 sm:py-12">
         <div className="rounded-[1.75rem] border border-primary/10 bg-[#fff1f1] px-5 py-6 shadow-soft sm:px-7 sm:py-7 lg:px-8">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-8">
             <div className="shrink-0">
@@ -105,7 +123,7 @@ export default async function HomePage() {
               </h2>
             </div>
 
-            <div className="grid flex-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="app-home-stats grid flex-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
               {achievementItems.map(({ label, value, icon: Icon }) => (
                 <div
                   key={label}
@@ -129,7 +147,7 @@ export default async function HomePage() {
 
       <MedicalCampCarousel />
 
-      <section className="container-shell py-16">
+      <section className="app-home-faq container-shell py-16">
         <div className="premium-card px-6 py-10 sm:px-8 lg:px-12 lg:py-12">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
