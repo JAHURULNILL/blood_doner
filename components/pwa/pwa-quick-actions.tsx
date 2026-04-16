@@ -129,10 +129,10 @@ export function PwaQuickActions() {
 
   const manualInstallText = useMemo(() => {
     if (iosDevice) {
-      return "Safari বা Chrome-এর শেয়ার মেনু থেকে Add to Home Screen চাপলে এটি অ্যাপের মতো ইনস্টল হবে।";
+      return "Safari বা Chrome-এর শেয়ার মেনু থেকে Add to Home Screen চাপুন।";
     }
 
-    return "Chrome-এর মেনু থেকে Add to Home Screen বা Install app চাপলে এটি পূর্ণ অ্যাপের মতো খুলবে।";
+    return "Chrome-এর মেনু থেকে Add to Home Screen বা Install app চাপুন।";
   }, [iosDevice]);
 
   const dismissInstallModal = () => {
@@ -216,18 +216,17 @@ export function PwaQuickActions() {
     <>
       {!standalone && mobileDevice && installVisible ? (
         <div className="fixed inset-0 z-[80] flex items-end justify-center bg-slate-950/45 p-4 backdrop-blur-[2px] sm:items-center">
-          <div className="w-full max-w-md overflow-hidden rounded-[2rem] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,248,250,0.96))] shadow-[0_40px_80px_-34px_rgba(15,23,42,0.45)]">
-            <div className="flex items-start justify-between gap-4 border-b border-slate-200/80 px-5 pb-4 pt-5">
-              <div className="flex items-start gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-white shadow-[0_18px_40px_-20px_rgba(190,24,38,0.7)]">
+          <div className="w-full max-w-sm overflow-hidden rounded-[2rem] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.99),rgba(247,248,250,0.98))] shadow-[0_40px_80px_-34px_rgba(15,23,42,0.45)]">
+            <div className="flex justify-center pt-3">
+              <div className="h-1.5 w-14 rounded-full bg-slate-200" />
+            </div>
+
+            <div className="flex items-center justify-between gap-4 px-5 pb-3 pt-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-[1.15rem] bg-primary text-white shadow-[0_18px_40px_-20px_rgba(190,24,38,0.7)]">
                   <Smartphone className="h-5 w-5" />
                 </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-slate-900">অ্যাপ হিসেবে ইন্সটল করুন</h3>
-                  <p className="mt-1 text-sm leading-6 text-slate-600">
-                    ইন্সটল করলে এটি full screen-এ খুলবে, অনেক বেশি real app feel দেবে।
-                  </p>
-                </div>
+                <h3 className="text-xl font-semibold text-slate-900">অ্যাপ হিসাবে ইন্সটল করুন</h3>
               </div>
               <button
                 type="button"
@@ -239,11 +238,7 @@ export function PwaQuickActions() {
               </button>
             </div>
 
-            <div className="space-y-4 px-5 py-5">
-              <div className="rounded-[1.5rem] border border-primary/12 bg-primary/[0.04] p-4">
-                <p className="text-sm leading-6 text-slate-700">{manualInstallText}</p>
-              </div>
-
+            <div className="space-y-3 px-5 pb-5 pt-2">
               <div className="grid gap-3">
                 <Button onClick={() => void installApp()} className="h-12 text-base">
                   <Download className="h-4 w-4" />
