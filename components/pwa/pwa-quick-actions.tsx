@@ -92,14 +92,14 @@ export function PwaQuickActions() {
   }, []);
 
   useEffect(() => {
-    if (standalone || !mobileDevice || !deferredPrompt) return;
+    if (standalone || !mobileDevice) return;
 
     const timer = window.setTimeout(() => {
       setInstallVisible(true);
     }, 900);
 
     return () => window.clearTimeout(timer);
-  }, [deferredPrompt, mobileDevice, standalone]);
+  }, [mobileDevice, standalone]);
 
   useEffect(() => {
     const checkNotificationState = async () => {
@@ -122,7 +122,10 @@ export function PwaQuickActions() {
   };
 
   const installApp = async () => {
-    if (!deferredPrompt) return;
+    if (!deferredPrompt) {
+      toast.info("install ready hocche, ektu pore abar chapun");
+      return;
+    }
 
     await deferredPrompt.prompt();
     const choice = await deferredPrompt.userChoice;
@@ -217,9 +220,9 @@ export function PwaQuickActions() {
 
             <div className="space-y-3 px-5 pb-5 pt-2">
               <div className="grid gap-3">
-                <Button onClick={() => void installApp()} className="h-12 text-base">
+                <Button onClick={() => void installApp()} className="h-12 text-base" disabled={!deferredPrompt}>
                   <Download className="h-4 w-4" />
-                  অ্যাপ ইন্সটল করুন
+                  {deferredPrompt ? "অ্যাপ ইন্সটল করুন" : "ইন্সটল প্রস্তুত হচ্ছে"}
                 </Button>
 
                 {showNotificationButton ? (
