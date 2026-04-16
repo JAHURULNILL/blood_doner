@@ -1,5 +1,5 @@
-const CACHE_NAME = "bera-raktodata-unit-v2";
-const APP_SHELL = ["/", "/offline", "/manifest.webmanifest", "/icon-192.png", "/icon-512.png", "/site-logo.jpg"];
+const CACHE_NAME = "bera-raktodata-unit-v3";
+const APP_SHELL = ["/", "/offline", "/manifest.webmanifest", "/icon.png", "/apple-icon.png", "/icon-192.png", "/icon-512.png", "/bera.jpg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

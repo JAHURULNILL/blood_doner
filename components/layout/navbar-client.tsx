@@ -103,7 +103,7 @@ export function NavbarClient() {
         <div className="container-shell flex h-[4.4rem] items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-3">
             <div className="overflow-hidden rounded-[1.1rem] border border-white/18 bg-white shadow-sm ring-1 ring-white/15">
-              <Image src="/site-logo.jpg" alt={siteConfig.name} width={44} height={44} className="h-11 w-11 object-cover" priority />
+              <Image src="/bera.jpg" alt={siteConfig.name} width={44} height={44} className="h-11 w-11 object-cover" priority />
             </div>
             <BrandText inverted compact />
           </Link>
@@ -193,7 +193,7 @@ export function NavbarClient() {
         <div className="mb-8 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="overflow-hidden rounded-2xl border border-primary/10 bg-white shadow-sm">
-              <Image src="/site-logo.jpg" alt={siteConfig.name} width={40} height={40} className="h-10 w-10 object-cover" priority />
+              <Image src="/bera.jpg" alt={siteConfig.name} width={40} height={40} className="h-10 w-10 object-cover" priority />
             </div>
             <BrandText compact />
           </div>

@@ -19,6 +19,8 @@ const displayFont = Manrope({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
+  applicationName: siteConfig.name,
   title: {
     default: siteConfig.name,
     template: `%s | ${siteConfig.name}`
@@ -26,14 +28,20 @@ export const metadata: Metadata = {
   description: siteConfig.description,
   manifest: "/manifest.webmanifest",
   icons: {
-    icon: "/site-logo.jpg",
-    shortcut: "/site-logo.jpg",
-    apple: "/site-logo.jpg"
+    icon: [
+      { url: "/icon.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" }
+    ],
+    shortcut: "/icon.png",
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }]
   },
   appleWebApp: {
     capable: true,
     title: siteConfig.name,
-    statusBarStyle: "default"
+    statusBarStyle: "black-translucent"
+  },
+  formatDetection: {
+    telephone: false
   }
 };
 
