@@ -1,10 +1,11 @@
 "use client";
 
-import { useTransition, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { bloodGroups, divisions } from "@/lib/constants";
+import { bloodGroups } from "@/lib/constants";
+import { getDistrictOptions, getUpazilaOptions, bangladeshDivisions } from "@/lib/bangladesh-address";
 import { createBloodRequestAction } from "@/lib/actions/platform-actions";
 import { bloodRequestSchema } from "@/lib/schemas";
 import { uploadFileToStorage } from "@/lib/uploads";
@@ -19,6 +20,8 @@ import type { z } from "zod";
 
 type BloodRequestValues = z.infer<typeof bloodRequestSchema>;
 
+const defaultDivision = bangladeshDivisions.find((division) => division.name === "ঢাকা")?.name ?? bangladeshDivisions[0]?.name ?? "";
+
 export function BloodRequestForm() {
   const [pending, startTransition] = useTransition();
   const [file, setFile] = useState<File | null>(null);
@@ -30,7 +33,7 @@ export function BloodRequestForm() {
       quantityBags: 1,
       requiredDate: "",
       hospitalName: "",
-      division: divisions[0],
+      division: defaultDivision,
       district: "",
       upazila: "",
       address: "",
@@ -41,6 +44,25 @@ export function BloodRequestForm() {
       status: "Open"
     }
   });
+
+  const selectedDivision = form.watch("division");
+  const selectedDistrict = form.watch("district");
+  const selectedUpazila = form.watch("upazila");
+  const districtOptions = getDistrictOptions(selectedDivision);
+  const upazilaOptions = getUpazilaOptions(selectedDistrict);
+
+  useEffect(() => {
+    if (!districtOptions.some((option) => option.name === selectedDistrict)) {
+      form.setValue("district", "");
+      form.setValue("upazila", "");
+    }
+  }, [districtOptions, form, selectedDistrict]);
+
+  useEffect(() => {
+    if (!upazilaOptions.some((option) => option.name === selectedUpazila)) {
+      form.setValue("upazila", "");
+    }
+  }, [form, selectedUpazila, upazilaOptions]);
 
   const submit = (values: BloodRequestValues) => {
     startTransition(async () => {
@@ -55,7 +77,23 @@ export function BloodRequestForm() {
         return;
       }
       toast.success(result.message);
-      form.reset();
+      form.reset({
+        patientName: "",
+        bloodGroup: "A+",
+        quantityBags: 1,
+        requiredDate: "",
+        hospitalName: "",
+        division: defaultDivision,
+        district: "",
+        upazila: "",
+        address: "",
+        contactName: "",
+        contactPhone: "",
+        urgency: "Emergency",
+        details: "",
+        status: "Open"
+      });
+      setFile(null);
     });
   };
 
@@ -99,9 +137,9 @@ export function BloodRequestForm() {
             <div>
               <Label>বিভাগ</Label>
               <Select {...form.register("division")}>
-                {divisions.map((division) => (
-                  <option key={division} value={division}>
-                    {division}
+                {bangladeshDivisions.map((division) => (
+                  <option key={division.id} value={division.name}>
+                    {division.name}
                   </option>
                 ))}
               </Select>
@@ -111,11 +149,25 @@ export function BloodRequestForm() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div>
               <Label>জেলা</Label>
-              <Input {...form.register("district")} />
+              <Select {...form.register("district")} disabled={!districtOptions.length}>
+                <option value="">জেলা নির্বাচন করুন</option>
+                {districtOptions.map((district) => (
+                  <option key={district.id} value={district.name}>
+                    {district.name}
+                  </option>
+                ))}
+              </Select>
             </div>
             <div>
               <Label>উপজেলা / এলাকা</Label>
-              <Input {...form.register("upazila")} />
+              <Select {...form.register("upazila")} disabled={!upazilaOptions.length}>
+                <option value="">উপজেলা নির্বাচন করুন</option>
+                {upazilaOptions.map((upazila) => (
+                  <option key={upazila.id} value={upazila.name}>
+                    {upazila.name}
+                  </option>
+                ))}
+              </Select>
             </div>
             <div>
               <Label>যোগাযোগ ব্যক্তি</Label>
@@ -142,10 +194,12 @@ export function BloodRequestForm() {
             <Label>পূর্ণ ঠিকানা</Label>
             <Textarea {...form.register("address")} />
           </div>
+
           <div>
             <Label>অতিরিক্ত তথ্য</Label>
             <Textarea {...form.register("details")} />
           </div>
+
           <ImageUploader label="প্রমাণপত্র / প্রেসক্রিপশন (ঐচ্ছিক)" onFileSelect={setFile} />
 
           <Button type="submit" disabled={pending}>

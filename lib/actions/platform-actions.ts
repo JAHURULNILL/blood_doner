@@ -3,6 +3,7 @@
 import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { donorProfileSchema, bloodRequestSchema, bloodBankSchema, blogSchema, campaignSchema, settingsSchema } from "@/lib/schemas";
+import { notifyMatchingDonorsForRequest } from "@/lib/push";
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/utils";
@@ -83,7 +84,7 @@ export async function createBloodRequestAction(values: Record<string, unknown> &
 
   const adminSupabase = createAdminSupabaseClient() ?? supabase;
 
-  const { error } = await adminSupabase.from("blood_requests").insert({
+  const payload = {
     created_by: user.id,
     patient_name: parsed.data.patientName,
     blood_group: parsed.data.bloodGroup,
@@ -100,9 +101,24 @@ export async function createBloodRequestAction(values: Record<string, unknown> &
     details: parsed.data.details || null,
     status: parsed.data.status,
     proof_image_url: values.proofImageUrl ?? null
-  });
+  };
+
+  const { data: request, error } = await adminSupabase.from("blood_requests").insert(payload).select("id").single();
 
   if (error) return { success: false, message: error.message };
+
+  try {
+    await notifyMatchingDonorsForRequest({
+      id: request.id,
+      patientName: parsed.data.patientName,
+      bloodGroup: parsed.data.bloodGroup,
+      district: parsed.data.district,
+      upazila: parsed.data.upazila,
+      urgency: parsed.data.urgency
+    });
+  } catch {
+    // Ignore notification delivery errors so the request creation still succeeds.
+  }
 
   revalidatePath("/requests");
   revalidatePath("/dashboard/requests");

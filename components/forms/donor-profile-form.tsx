@@ -1,11 +1,12 @@
 "use client";
 
-import { useTransition, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { bloodGroups, divisions } from "@/lib/constants";
+import { bloodGroups } from "@/lib/constants";
+import { getDistrictOptions, getUpazilaOptions, bangladeshDivisions } from "@/lib/bangladesh-address";
 import { saveDonorProfileAction } from "@/lib/actions/platform-actions";
 import { donorProfileSchema } from "@/lib/schemas";
 import { uploadFileToStorage } from "@/lib/uploads";
@@ -30,6 +31,8 @@ function getDateInputValue(value?: string | null) {
   return value.includes("T") ? value.slice(0, 10) : value;
 }
 
+const defaultDivision = bangladeshDivisions.find((division) => division.name === "ঢাকা")?.name ?? bangladeshDivisions[0]?.name ?? "";
+
 export function DonorProfileForm({ donor }: DonorProfileFormProps) {
   const [pending, startTransition] = useTransition();
   const [file, setFile] = useState<File | null>(null);
@@ -44,7 +47,7 @@ export function DonorProfileForm({ donor }: DonorProfileFormProps) {
       gender: donor?.gender ?? "male",
       dateOfBirth: getDateInputValue(donor?.date_of_birth),
       weight: donor?.weight ?? 50,
-      division: donor?.division ?? divisions[0],
+      division: donor?.division ?? defaultDivision,
       district: donor?.district ?? "",
       upazila: donor?.upazila ?? "",
       address: donor?.address ?? "",
@@ -56,6 +59,25 @@ export function DonorProfileForm({ donor }: DonorProfileFormProps) {
       availabilityStatus: donor?.availability_status ?? "available"
     }
   });
+
+  const selectedDivision = form.watch("division");
+  const selectedDistrict = form.watch("district");
+  const selectedUpazila = form.watch("upazila");
+  const districtOptions = getDistrictOptions(selectedDivision);
+  const upazilaOptions = getUpazilaOptions(selectedDistrict);
+
+  useEffect(() => {
+    if (!districtOptions.some((option) => option.name === selectedDistrict)) {
+      form.setValue("district", "");
+      form.setValue("upazila", "");
+    }
+  }, [districtOptions, form, selectedDistrict]);
+
+  useEffect(() => {
+    if (!upazilaOptions.some((option) => option.name === selectedUpazila)) {
+      form.setValue("upazila", "");
+    }
+  }, [form, selectedUpazila, upazilaOptions]);
 
   const submit = (values: DonorProfileValues) => {
     startTransition(async () => {
@@ -77,7 +99,7 @@ export function DonorProfileForm({ donor }: DonorProfileFormProps) {
         router.push("/dashboard/profile");
         router.refresh();
       } catch (error) {
-        const message = error instanceof Error ? error.message : "প্রোফাইল সেভ করার সময় অপ্রত্যাশিত সমস্যা হয়েছে";
+        const message = error instanceof Error ? error.message : "প্রোফাইল সেভ করা যায়নি";
         toast.error(message);
       }
     });
@@ -91,6 +113,7 @@ export function DonorProfileForm({ donor }: DonorProfileFormProps) {
       <CardContent>
         <form className="grid gap-5" onSubmit={form.handleSubmit(submit)}>
           <ImageUploader label="প্রোফাইল ছবি" initialPreview={donor?.profile_photo_url} onFileSelect={setFile} />
+
           <div className="grid gap-4 lg:grid-cols-2">
             <div>
               <Label htmlFor="fullName">পূর্ণ নাম</Label>
@@ -140,20 +163,34 @@ export function DonorProfileForm({ donor }: DonorProfileFormProps) {
             <div>
               <Label>বিভাগ</Label>
               <Select {...form.register("division")}>
-                {divisions.map((division) => (
-                  <option key={division} value={division}>
-                    {division}
+                {bangladeshDivisions.map((division) => (
+                  <option key={division.id} value={division.name}>
+                    {division.name}
                   </option>
                 ))}
               </Select>
             </div>
             <div>
               <Label>জেলা</Label>
-              <Input {...form.register("district")} />
+              <Select {...form.register("district")} disabled={!districtOptions.length}>
+                <option value="">জেলা নির্বাচন করুন</option>
+                {districtOptions.map((district) => (
+                  <option key={district.id} value={district.name}>
+                    {district.name}
+                  </option>
+                ))}
+              </Select>
             </div>
             <div>
               <Label>উপজেলা / এলাকা</Label>
-              <Input {...form.register("upazila")} />
+              <Select {...form.register("upazila")} disabled={!upazilaOptions.length}>
+                <option value="">উপজেলা নির্বাচন করুন</option>
+                {upazilaOptions.map((upazila) => (
+                  <option key={upazila.id} value={upazila.name}>
+                    {upazila.name}
+                  </option>
+                ))}
+              </Select>
             </div>
           </div>
 

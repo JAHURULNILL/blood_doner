@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import "./globals.css";
 import { siteConfig } from "@/lib/constants";
 import { RegisterServiceWorker } from "@/components/pwa/register-service-worker";
+import { PwaQuickActions } from "@/components/pwa/pwa-quick-actions";
 
 const bengaliFont = Hind_Siliguri({
   variable: "--font-bengali",
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#b41520"
+  themeColor: "#0d1b2a"
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="bn">
       <body className={`${bengaliFont.variable} ${displayFont.variable}`}>
         <RegisterServiceWorker />
+        <PwaQuickActions />
         {children}
         <Toaster richColors position="top-right" />
       </body>
