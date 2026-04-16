@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Bell, Download, Smartphone, X } from "lucide-react";
 import { toast } from "sonner";
 import { webPushConfig } from "@/lib/push-config";
@@ -27,12 +27,6 @@ function isStandaloneMode() {
   return window.matchMedia("(display-mode: standalone)").matches || (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
 }
 
-function isIosDevice() {
-  if (typeof window === "undefined") return false;
-
-  return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
-}
-
 function isMobileDevice() {
   if (typeof window === "undefined") return false;
 
@@ -51,13 +45,11 @@ export function PwaQuickActions() {
   const [notificationEnabled, setNotificationEnabled] = useState(false);
   const [installVisible, setInstallVisible] = useState(false);
   const [standalone, setStandalone] = useState(false);
-  const [iosDevice, setIosDevice] = useState(false);
   const [mobileDevice, setMobileDevice] = useState(false);
 
   useEffect(() => {
     const appInstalled = isStandaloneMode();
     setStandalone(appInstalled);
-    setIosDevice(isIosDevice());
     setMobileDevice(isMobileDevice());
     setStandaloneClass(appInstalled);
 
@@ -99,17 +91,17 @@ export function PwaQuickActions() {
   }, []);
 
   useEffect(() => {
-    if (standalone || !mobileDevice) return;
+    if (standalone || !mobileDevice || !deferredPrompt) return;
 
     const dismissed = window.sessionStorage.getItem(INSTALL_DISMISS_KEY);
     if (dismissed === "1") return;
 
     const timer = window.setTimeout(() => {
       setInstallVisible(true);
-    }, 1200);
+    }, 900);
 
     return () => window.clearTimeout(timer);
-  }, [mobileDevice, standalone, deferredPrompt]);
+  }, [deferredPrompt, mobileDevice, standalone]);
 
   useEffect(() => {
     const checkNotificationState = async () => {
@@ -127,24 +119,13 @@ export function PwaQuickActions() {
     void checkNotificationState();
   }, []);
 
-  const manualInstallText = useMemo(() => {
-    if (iosDevice) {
-      return "Safari বা Chrome-এর শেয়ার মেনু থেকে Add to Home Screen চাপুন।";
-    }
-
-    return "Chrome-এর মেনু থেকে Add to Home Screen বা Install app চাপুন।";
-  }, [iosDevice]);
-
   const dismissInstallModal = () => {
     setInstallVisible(false);
     window.sessionStorage.setItem(INSTALL_DISMISS_KEY, "1");
   };
 
   const installApp = async () => {
-    if (!deferredPrompt) {
-      toast.info(manualInstallText);
-      return;
-    }
+    if (!deferredPrompt) return;
 
     await deferredPrompt.prompt();
     const choice = await deferredPrompt.userChoice;

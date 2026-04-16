@@ -90,16 +90,26 @@ html.app-standalone .app-brand-logo img {
   width: 2.45rem;
 }
 
-html.app-standalone .app-brand-text .app-brand-top,
-html.app-standalone .app-brand-text .app-brand-bottom {
-  display: none;
-}
-
 html.app-standalone .app-brand-text .app-brand-middle {
-  margin-top: 0;
-  font-size: 1rem;
+  margin-top: -0.15rem;
+  font-size: 0.96rem;
   line-height: 1.1;
   letter-spacing: -0.03em;
+}
+
+html.app-standalone .app-brand-text .app-brand-top {
+  margin-left: 0.85rem;
+  font-size: 0.46rem;
+  letter-spacing: 0.1em;
+  opacity: 0.92;
+}
+
+html.app-standalone .app-brand-text .app-brand-bottom {
+  margin-top: -0.15rem;
+  margin-left: 1.85rem;
+  font-size: 0.42rem;
+  letter-spacing: 0.14em;
+  opacity: 0.9;
 }
 
 html.app-standalone .app-navbar-menu {
@@ -164,14 +174,20 @@ html.app-standalone .app-drawer-logo img {
   width: 2.35rem;
 }
 
-html.app-standalone .app-drawer-brand .app-brand-top,
-html.app-standalone .app-drawer-brand .app-brand-bottom {
-  display: none;
+html.app-standalone .app-drawer-brand .app-brand-middle {
+  margin-top: -0.15rem;
+  font-size: 1rem;
 }
 
-html.app-standalone .app-drawer-brand .app-brand-middle {
-  margin-top: 0;
-  font-size: 1rem;
+html.app-standalone .app-drawer-brand .app-brand-top {
+  margin-left: 0.95rem;
+  font-size: 0.46rem;
+}
+
+html.app-standalone .app-drawer-brand .app-brand-bottom {
+  margin-top: -0.15rem;
+  margin-left: 1.95rem;
+  font-size: 0.42rem;
 }
 
 html.app-standalone .app-drawer-close {
