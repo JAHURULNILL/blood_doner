@@ -12,39 +12,41 @@ export function BrandText({ className, align = "left", inverted = false, compact
   return (
     <div
       className={cn(
-        "flex flex-col leading-none",
+        "flex",
         align === "center" ? "items-center text-center" : "items-start text-left",
         className
       )}
       aria-label={siteConfig.name}
     >
-      <span
-        className={cn(
-          "font-display font-semibold tracking-[0.18em]",
-          compact ? "text-[0.52rem] sm:text-[0.58rem]" : "text-[0.58rem] sm:text-[0.66rem]",
-          inverted ? "text-white/85" : "text-foreground/70"
-        )}
-      >
-        {siteConfig.brand.top}
-      </span>
-      <span
-        className={cn(
-          "font-display font-extrabold tracking-tight",
-          compact ? "text-base sm:text-lg" : "text-xl sm:text-2xl",
-          inverted ? "text-white" : "text-foreground"
-        )}
-      >
-        {siteConfig.brand.middle}
-      </span>
-      <span
-        className={cn(
-          "font-display font-semibold tracking-[0.24em]",
-          compact ? "text-[0.5rem] sm:text-[0.56rem]" : "text-[0.56rem] sm:text-[0.64rem]",
-          inverted ? "text-white/80" : "text-foreground/65"
-        )}
-      >
-        {siteConfig.brand.bottom}
-      </span>
+      <div className="flex w-fit flex-col leading-none">
+        <span
+          className={cn(
+            "block w-fit font-display font-semibold tracking-[0.08em]",
+            compact ? "ml-4 text-[0.54rem] sm:ml-5 sm:text-[0.58rem]" : "ml-6 text-[0.6rem] sm:ml-7 sm:text-[0.72rem]",
+            inverted ? "text-white/88" : "text-foreground/72"
+          )}
+        >
+          {siteConfig.brand.top}
+        </span>
+        <span
+          className={cn(
+            "block w-fit font-display font-extrabold tracking-tight",
+            compact ? "-mt-0.5 text-base sm:text-lg" : "-mt-1 text-xl sm:text-[1.7rem]",
+            inverted ? "text-white" : "text-foreground"
+          )}
+        >
+          {siteConfig.brand.middle}
+        </span>
+        <span
+          className={cn(
+            "block w-fit font-display font-semibold tracking-[0.16em]",
+            compact ? "-mt-0.5 ml-8 text-[0.5rem] sm:ml-10 sm:text-[0.56rem]" : "-mt-1 ml-12 text-[0.56rem] sm:ml-14 sm:text-[0.68rem]",
+            inverted ? "text-white/82" : "text-foreground/66"
+          )}
+        >
+          {siteConfig.brand.bottom}
+        </span>
+      </div>
     </div>
   );
 }
