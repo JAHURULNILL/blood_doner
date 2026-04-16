@@ -100,15 +100,15 @@ export function NavbarClient() {
   return (
     <>
       <header className="app-navbar sticky top-0 z-50 border-b border-[#b41520] bg-primary text-primary-foreground shadow-[0_12px_32px_-24px_rgba(190,24,38,0.65)]">
-        <div className="container-shell flex h-[4.4rem] items-center justify-between gap-4">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="overflow-hidden rounded-[1.1rem] border border-white/18 bg-white shadow-sm ring-1 ring-white/15">
+        <div className="app-navbar-shell container-shell flex h-[4.4rem] items-center justify-between gap-4">
+          <Link href="/" className="app-brand-link flex items-center gap-3">
+            <div className="app-brand-logo overflow-hidden rounded-[1.1rem] border border-white/18 bg-white shadow-sm ring-1 ring-white/15">
               <Image src="/bera.jpg" alt={siteConfig.name} width={44} height={44} className="h-11 w-11 object-cover" priority />
             </div>
-            <BrandText inverted compact />
+            <BrandText inverted compact className="app-brand-text" />
           </Link>
 
-          <nav className="hidden items-center gap-6 lg:flex">
+          <nav className="app-navbar-links hidden items-center gap-6 lg:flex">
             {publicNavItems.map((item) => (
               <Link
                 key={item.href}
@@ -121,7 +121,7 @@ export function NavbarClient() {
             ))}
           </nav>
 
-          <div className="hidden items-center gap-2 lg:flex">
+          <div className="app-navbar-actions hidden items-center gap-2 lg:flex">
             {authState === "loading" ? (
               <div className="flex items-center gap-3">
                 <div className="h-10 w-28 animate-pulse rounded-full bg-secondary" />
@@ -163,11 +163,11 @@ export function NavbarClient() {
             )}
           </div>
 
-          <div className="flex items-center gap-2 lg:hidden">
+          <div className="app-navbar-mobile flex items-center gap-2 lg:hidden">
             <Button
               size="icon"
               variant="outline"
-              className="border-white/25 bg-white/12 text-white hover:bg-white/18 hover:text-white"
+              className="app-navbar-menu border-white/25 bg-white/12 text-white hover:bg-white/18 hover:text-white"
               aria-label="Menu"
               onClick={() => setOpen(true)}
             >
@@ -186,18 +186,18 @@ export function NavbarClient() {
       />
       <div
         className={cn(
-          "fixed right-0 top-0 z-[61] h-full w-[88vw] max-w-sm border-l border-border bg-background/95 p-6 shadow-2xl backdrop-blur-xl transition-transform duration-300 lg:hidden",
+          "app-drawer fixed right-0 top-0 z-[61] h-full w-[88vw] max-w-sm border-l border-border bg-background/95 p-6 shadow-2xl backdrop-blur-xl transition-transform duration-300 lg:hidden",
           open ? "translate-x-0" : "translate-x-full"
         )}
       >
-        <div className="mb-8 flex items-center justify-between">
+        <div className="app-drawer-header mb-8 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="overflow-hidden rounded-2xl border border-primary/10 bg-white shadow-sm">
+            <div className="app-drawer-logo overflow-hidden rounded-2xl border border-primary/10 bg-white shadow-sm">
               <Image src="/bera.jpg" alt={siteConfig.name} width={40} height={40} className="h-10 w-10 object-cover" priority />
             </div>
-            <BrandText compact />
+            <BrandText compact className="app-drawer-brand" />
           </div>
-          <Button size="icon" variant="ghost" onClick={() => setOpen(false)}>
+          <Button size="icon" variant="ghost" onClick={() => setOpen(false)} className="app-drawer-close">
             <X className="h-4 w-4" />
           </Button>
         </div>
