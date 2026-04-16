@@ -12,7 +12,7 @@ export function PageShell(props: PageShellProps) {
   const { title, eyebrow, children, className } = props;
 
   return (
-    <div className={cn("page-backdrop", className)}>
+    <div className={cn("app-page-shell page-backdrop", className)}>
       <div className="container-shell py-10 sm:py-12 lg:py-16">
         <div className="mb-10 rounded-[2rem] border border-border/70 bg-white/78 p-7 shadow-soft backdrop-blur sm:p-8 lg:p-10">
           <div className="max-w-3xl space-y-4">

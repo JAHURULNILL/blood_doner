@@ -11,7 +11,7 @@ const footerLinks = [
 
 export function Footer() {
   return (
-    <footer className="mt-20 border-t border-slate-800 bg-[#0d1b2a] text-slate-100">
+    <footer className="app-footer mt-20 border-t border-slate-800 bg-[#0d1b2a] text-slate-100">
       <div className="container-shell py-12 sm:py-14">
         <div className="mx-auto max-w-4xl text-center">
           <div className="mx-auto flex w-fit items-center gap-3">

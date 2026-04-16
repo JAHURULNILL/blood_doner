@@ -99,7 +99,7 @@ export function NavbarClient() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-[#b41520] bg-primary text-primary-foreground shadow-[0_12px_32px_-24px_rgba(190,24,38,0.65)]">
+      <header className="app-navbar sticky top-0 z-50 border-b border-[#b41520] bg-primary text-primary-foreground shadow-[0_12px_32px_-24px_rgba(190,24,38,0.65)]">
         <div className="container-shell flex h-[4.4rem] items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-3">
             <div className="overflow-hidden rounded-[1.1rem] border border-white/18 bg-white shadow-sm ring-1 ring-white/15">
