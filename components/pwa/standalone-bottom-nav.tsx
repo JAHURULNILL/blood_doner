@@ -10,7 +10,7 @@ const navItems = [
   { href: "/donors", label: "খুঁজুন", icon: Search },
   { href: "/requests", label: "অনুরোধ", icon: HeartPulse },
   { href: "/contact", label: "যোগাযোগ", icon: Phone },
-  { href: "/dashboard", label: "অ্যাকাউন্ট", icon: LayoutDashboard }
+  { href: "/account", label: "অ্যাকাউন্ট", icon: LayoutDashboard }
 ];
 
 export function StandaloneBottomNav() {
