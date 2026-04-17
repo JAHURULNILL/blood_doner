@@ -6,9 +6,10 @@ interface EnsureUserRecordInput {
   user: User;
   fullName?: string | null;
   phone?: string | null;
+  organizationId?: string | null;
 }
 
-export async function ensureUserRecord({ user, fullName, phone }: EnsureUserRecordInput) {
+export async function ensureUserRecord({ user, fullName, phone, organizationId }: EnsureUserRecordInput) {
   const adminSupabase = createAdminSupabaseClient();
   if (!adminSupabase) return { success: false as const, message: "Server admin client unavailable" };
 
@@ -28,7 +29,8 @@ export async function ensureUserRecord({ user, fullName, phone }: EnsureUserReco
     full_name: fullName ?? user.user_metadata.full_name ?? "নতুন ব্যবহারকারী",
     phone: phone ?? user.user_metadata.phone ?? "",
     role: (existingUser?.role as UserRole | undefined) ?? ((user.app_metadata.role as UserRole) ?? "user"),
-    avatar_url: user.user_metadata.avatar_url ?? null
+    avatar_url: user.user_metadata.avatar_url ?? null,
+    organization_id: organizationId ?? user.user_metadata.organization_id ?? null
   };
 
   const { error } = await adminSupabase.from("users").upsert(payload, { onConflict: "id" });

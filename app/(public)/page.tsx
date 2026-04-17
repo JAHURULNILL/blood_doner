@@ -66,6 +66,11 @@ export default async function HomePage() {
                     রক্তদাতা হোন
                   </Link>
                 </Button>
+                <Button variant="outline" size="lg" asChild className="bg-white/85">
+                  <Link href="/organizations/join" prefetch>
+                    সংগঠন হিসাবে যুক্ত হোন
+                  </Link>
+                </Button>
               </div>
 
               <div className="app-home-shortcuts hidden grid-cols-3 gap-3">
@@ -83,6 +88,11 @@ export default async function HomePage() {
                   আমার
                   <br />
                   অ্যাকাউন্ট
+                </Link>
+                <Link href="/organizations/join" className="rounded-[1.3rem] border border-border/70 bg-white px-4 py-4 text-center text-sm font-medium shadow-soft">
+                  সংগঠন
+                  <br />
+                  যুক্ত হোন
                 </Link>
               </div>
             </div>

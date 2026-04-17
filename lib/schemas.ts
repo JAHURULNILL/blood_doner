@@ -10,6 +10,7 @@ export const registerSchema = loginSchema
   .extend({
     fullName: z.string().min(3, "পূর্ণ নাম লিখুন"),
     phone: z.string().min(11, "সঠিক ফোন নম্বর লিখুন"),
+    organizationId: z.string().optional(),
     confirmPassword: z.string().min(6, "পাসওয়ার্ড মিলছে না")
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -81,6 +82,16 @@ export const campaignSchema = z.object({
   eventDate: z.string().min(1, "তারিখ নির্বাচন করুন"),
   organizer: z.string().min(3, "আয়োজকের নাম লিখুন"),
   contactInfo: z.string().min(5, "যোগাযোগ তথ্য লিখুন")
+});
+
+export const organizationSchema = z.object({
+  name: z.string().min(3, "সংগঠনের নাম লিখুন"),
+  description: z.string().min(12, "সংক্ষিপ্ত পরিচিতি লিখুন"),
+  division: z.string().min(2, "বিভাগ নির্বাচন করুন"),
+  district: z.string().min(2, "জেলা নির্বাচন করুন"),
+  upazila: z.string().min(2, "এলাকা নির্বাচন করুন"),
+  contactPhone: z.string().min(11, "যোগাযোগ নম্বর লিখুন"),
+  contactEmail: z.union([z.string().email("সঠিক ইমেইল লিখুন"), z.literal("")]).optional()
 });
 
 export const settingsSchema = z.object({

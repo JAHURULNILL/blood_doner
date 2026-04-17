@@ -8,15 +8,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { registerAction } from "@/lib/actions/auth-actions";
 import { registerSchema } from "@/lib/schemas";
+import type { Organization } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
 import type { z } from "zod";
 
 type RegisterValues = z.infer<typeof registerSchema>;
 
-export function RegisterForm() {
+export function RegisterForm({ organizations }: { organizations: Organization[] }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const form = useForm<RegisterValues>({
@@ -25,6 +27,7 @@ export function RegisterForm() {
       fullName: "",
       email: "",
       phone: "",
+      organizationId: "none",
       password: "",
       confirmPassword: ""
     }
@@ -55,6 +58,7 @@ export function RegisterForm() {
             <Input id="fullName" {...form.register("fullName")} />
             <p className="mt-2 text-xs text-primary">{form.formState.errors.fullName?.message}</p>
           </div>
+
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <Label htmlFor="email">ইমেইল</Label>
@@ -67,6 +71,20 @@ export function RegisterForm() {
               <p className="mt-2 text-xs text-primary">{form.formState.errors.phone?.message}</p>
             </div>
           </div>
+
+          <div>
+            <Label htmlFor="organizationId">আপনি কোন সংগঠনের?</Label>
+            <Select id="organizationId" {...form.register("organizationId")}>
+              <option value="none">আমি কোনো সংগঠনের না</option>
+              {organizations.map((organization) => (
+                <option key={organization.id} value={organization.id}>
+                  {organization.name}
+                </option>
+              ))}
+            </Select>
+            <p className="mt-2 text-xs text-muted-foreground">পরে চাইলে প্রোফাইল থেকে বদলানো যাবে।</p>
+          </div>
+
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <Label htmlFor="password">পাসওয়ার্ড</Label>
@@ -79,9 +97,11 @@ export function RegisterForm() {
               <p className="mt-2 text-xs text-primary">{form.formState.errors.confirmPassword?.message}</p>
             </div>
           </div>
+
           <Button className="w-full" type="submit" disabled={pending}>
             {pending ? "রেজিস্ট্রেশন হচ্ছে..." : "রেজিস্ট্রেশন"}
           </Button>
+
           <p className="text-center text-sm text-muted-foreground">
             ইতোমধ্যে অ্যাকাউন্ট আছে?{" "}
             <Link href="/login" className="text-primary">

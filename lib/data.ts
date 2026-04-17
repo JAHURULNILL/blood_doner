@@ -10,7 +10,9 @@ import type {
   Campaign,
   DashboardSummary,
   DonationHistoryItem,
-  DonorProfile
+  DonorProfile,
+  Organization,
+  UserRecord
 } from "@/lib/types";
 
 const emptySummary: DashboardSummary = {
@@ -194,6 +196,96 @@ export async function getCampaignBySlug(slug: string) {
 
   const { data } = await supabase.from("campaigns").select("*").eq("slug", slug).maybeSingle();
   return (data as Campaign | null) ?? null;
+}
+
+export async function getOrganizations() {
+  noStore();
+
+  const supabase = createPublicSupabaseClient();
+  const adminSupabase = createAdminSupabaseClient();
+  const db = adminSupabase ?? supabase;
+
+  if (!db) return [] as Organization[];
+
+  const { data: organizations } = await db.from("organizations").select("*").order("name");
+  const { data: users } = await db.from("users").select("id, organization_id");
+
+  const counts = new Map<string, number>();
+  for (const user of users ?? []) {
+    const organizationId = user.organization_id as string | null;
+    if (!organizationId) continue;
+    counts.set(organizationId, (counts.get(organizationId) ?? 0) + 1);
+  }
+
+  return ((organizations ?? []) as Organization[]).map((organization) => ({
+    ...organization,
+    member_count: counts.get(organization.id) ?? 0
+  }));
+}
+
+export async function getOrganizationBySlug(slug: string) {
+  noStore();
+
+  const supabase = createPublicSupabaseClient();
+  const adminSupabase = createAdminSupabaseClient();
+  const db = adminSupabase ?? supabase;
+
+  if (!db) return null;
+
+  const { data } = await db.from("organizations").select("*").eq("slug", slug).maybeSingle();
+  return (data as Organization | null) ?? null;
+}
+
+export async function getOrganizationMembers(organizationId: string) {
+  noStore();
+
+  const adminSupabase = createAdminSupabaseClient();
+  if (!adminSupabase) return [] as Array<UserRecord & { donor_profile?: DonorProfile | null }>;
+
+  const { data: users } = await adminSupabase
+    .from("users")
+    .select("*")
+    .eq("organization_id", organizationId)
+    .order("created_at", { ascending: false });
+
+  const memberUsers = (users ?? []) as UserRecord[];
+  if (!memberUsers.length) return [];
+
+  const { data: donorProfiles } = await adminSupabase
+    .from("donor_profiles")
+    .select("*")
+    .in(
+      "user_id",
+      memberUsers.map((user) => user.id)
+    );
+
+  const donorMap = new Map<string, DonorProfile>();
+  for (const donor of (donorProfiles ?? []) as DonorProfile[]) {
+    donorMap.set(donor.user_id, donor);
+  }
+
+  return memberUsers.map((user) => ({
+    ...user,
+    donor_profile: donorMap.get(user.id) ?? null
+  }));
+}
+
+export async function getUserOrganization(userId: string) {
+  noStore();
+
+  const adminSupabase = createAdminSupabaseClient();
+  const supabase = await createServerSupabaseClient();
+  const db = adminSupabase ?? supabase;
+
+  if (!db) return null;
+
+  const { data: user } = await db.from("users").select("organization_id").eq("id", userId).maybeSingle();
+  const organizationId = user?.organization_id as string | null | undefined;
+
+  if (!organizationId) return null;
+
+  const { data: organization } = await db.from("organizations").select("*").eq("id", organizationId).maybeSingle();
+  return (organization as Organization | null) ?? null;
 }
 
 export async function getDonationHistory() {

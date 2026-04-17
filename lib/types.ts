@@ -5,12 +5,29 @@ export type UrgencyLevel = (typeof urgencyLevels)[number];
 export type RequestStatus = (typeof requestStatuses)[number];
 export type UserRole = "user" | "admin";
 
+export interface Organization {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  division?: string | null;
+  district?: string | null;
+  upazila?: string | null;
+  contact_phone?: string | null;
+  contact_email?: string | null;
+  created_by?: string | null;
+  created_at: string;
+  updated_at?: string;
+  member_count?: number;
+}
+
 export interface UserRecord {
   id: string;
   email: string;
   full_name: string;
   phone: string;
   role: UserRole;
+  organization_id?: string | null;
   avatar_url?: string | null;
   is_blocked?: boolean;
   created_at: string;

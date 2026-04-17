@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
-import { BadgeCheck, CalendarDays, HeartPulse, MapPin, PhoneCall } from "lucide-react";
-import { getDonorById } from "@/lib/data";
+import Link from "next/link";
+import { BadgeCheck, Building2, CalendarDays, HeartPulse, MapPin, PhoneCall } from "lucide-react";
+import { getDonorById, getUserOrganization } from "@/lib/data";
 import { formatDate, getAvailabilityFromLastDonation, maskPhone } from "@/lib/utils";
 import { PageShell } from "@/components/layout/page-shell";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -12,6 +13,8 @@ export default async function DonorDetailsPage({ params }: { params: Promise<{ i
   const donor = await getDonorById(id);
 
   if (!donor) return notFound();
+
+  const organization = await getUserOrganization(donor.user_id);
 
   const availability = getAvailabilityFromLastDonation(donor.last_donated_at);
 
@@ -61,6 +64,16 @@ export default async function DonorDetailsPage({ params }: { params: Promise<{ i
               <p className="inline-flex items-center gap-2">
                 <HeartPulse className="h-4 w-4 text-primary" />
                 মোট রক্তদান: {donor.total_donations} বার
+              </p>
+              <p className="inline-flex items-center gap-2">
+                <Building2 className="h-4 w-4 text-primary" />
+                {organization ? (
+                  <Link href={`/organizations/${organization.slug}`} className="text-primary">
+                    {organization.name}
+                  </Link>
+                ) : (
+                  "আমি কোনো সংগঠনের না"
+                )}
               </p>
             </div>
 

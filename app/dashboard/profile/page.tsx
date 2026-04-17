@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
-import { getCurrentUserDonorProfile } from "@/lib/data";
+import { getCurrentUserDonorProfile, getUserOrganization } from "@/lib/data";
 import { calculateProfileCompletion } from "@/lib/utils";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { ProfileSummaryCard } from "@/components/cards/profile-summary-card";
@@ -11,6 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 export default async function DashboardProfilePage() {
   const user = await requireUser();
   const donor = await getCurrentUserDonorProfile(user.id);
+  const organization = await getUserOrganization(user.id);
   const completion = calculateProfileCompletion(donor);
 
   return (
@@ -42,6 +43,18 @@ export default async function DashboardProfilePage() {
               <div>
                 <p className="text-sm text-muted-foreground">ইমেইল</p>
                 <p className="mt-1 font-medium">{donor.email}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">সংগঠন</p>
+                <p className="mt-1 font-medium">
+                  {organization ? (
+                    <Link href={`/organizations/${organization.slug}`} className="text-primary">
+                      {organization.name}
+                    </Link>
+                  ) : (
+                    "আমি কোনো সংগঠনের না"
+                  )}
+                </p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">লোকেশন</p>

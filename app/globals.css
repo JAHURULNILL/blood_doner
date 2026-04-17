@@ -266,6 +266,7 @@ html.app-standalone .app-home-actions {
 
 html.app-standalone .app-home-shortcuts {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 html.app-standalone .app-home-shortcuts a {
