@@ -64,11 +64,11 @@ html.app-standalone .app-bottom-nav {
 html.app-standalone .app-navbar {
   top: 0;
   padding-top: env(safe-area-inset-top);
-  border-bottom-color: rgba(255, 255, 255, 0.08);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
   background:
-    linear-gradient(180deg, rgba(12, 27, 42, 0.98), rgba(12, 27, 42, 0.94)),
-    linear-gradient(90deg, rgba(190, 24, 38, 0.1), transparent);
-  box-shadow: 0 12px 28px -24px rgba(15, 23, 42, 0.28);
+    linear-gradient(180deg, rgba(220, 38, 38, 0.98), rgba(190, 24, 38, 0.96)),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08), transparent);
+  box-shadow: 0 14px 30px -24px rgba(127, 29, 29, 0.42);
   backdrop-filter: blur(16px);
 }
 
