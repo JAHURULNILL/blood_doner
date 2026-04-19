@@ -1,4 +1,4 @@
-# রক্তসেতু
+# বেড়া রক্তদাতা ইউনিট
 
 প্রিমিয়াম, production-ready, Bengali-first blood donation platform built with Next.js App Router, TypeScript, Tailwind CSS, shadcn-style UI primitives, Supabase Auth/Postgres/Storage, React Hook Form, Zod, Lucide icons, and Vercel-ready deployment.
 
@@ -205,36 +205,9 @@ All visible content is written in Bengali and the layout uses a restrained, prem
 
 The app ships with local demo data in [`lib/demo-data.ts`](./lib/demo-data.ts) so the full UI remains browseable even before environment variables are configured.
 
-## 10. Environment Variables
 
-Copy `.env.example` to `.env.local` and set:
 
-```bash
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-```
-
-## 11. Local Setup Instructions
-
-```bash
-npm install
-npm run dev
-```
-
-Open `http://localhost:3000`.
-
-## 12. Vercel Deployment Instructions
-
-1. Push the repository to GitHub
-2. Import the project into Vercel
-3. Add all environment variables from `.env.example`
-4. Set the production site URL in `NEXT_PUBLIC_SITE_URL`
-5. Deploy
-6. Add the deployed URL to Supabase Auth redirect URLs
-
-## 13. Notes
+## 10. Notes
 
 - The app gracefully falls back to demo content when Supabase env vars are missing
 - Once Supabase is configured, auth, storage, and database-backed CRUD paths activate automatically
