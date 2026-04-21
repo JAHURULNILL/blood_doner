@@ -26,6 +26,7 @@ const kCardPadding = 14.0;
 const kCardGap = 10.0;
 const kSectionGap = 14.0;
 const _bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+const kNillFacebookUrl = 'https://www.facebook.com/zahurulhaquenill';
 
 const kCardShadow = [
   BoxShadow(color: Color(0x0F000000), blurRadius: 16, offset: Offset(0, 4)),
@@ -168,7 +169,7 @@ class _BeraNativeAppState extends State<BeraNativeApp> {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      title: 'à¦¬à§‡à¦¡à¦¼à¦¾ à¦°à¦•à§à¦¤à¦¦à¦¾à¦¤à¦¾ à¦‡à¦‰à¦¨à¦¿à¦Ÿ',
+      title: 'বেড়া রক্তদাতা ইউনিট',
       theme: buildAppTheme(),
       routerConfig: router,
     );
@@ -292,7 +293,7 @@ class AppRepository {
 
   Future<List<DonorItem>> fetchDonors({String? bloodGroup}) async {
     final db = client;
-    if (db == null) return DonorItem.demo;
+    if (db == null) return <DonorItem>[];
     dynamic query = db
         .from('donor_profiles')
         .select('*')
@@ -306,7 +307,7 @@ class AppRepository {
 
   Future<List<RequestItem>> fetchRequests({String? bloodGroup}) async {
     final db = client;
-    if (db == null) return RequestItem.demo;
+    if (db == null) return <RequestItem>[];
     dynamic query = db
         .from('blood_requests')
         .select('*')
@@ -320,7 +321,7 @@ class AppRepository {
 
   Future<List<CampaignItem>> fetchCampaigns() async {
     final db = client;
-    if (db == null) return CampaignItem.demo;
+    if (db == null) return <CampaignItem>[];
     final data =
         await db.from('campaigns').select('*').order('event_date') as List<dynamic>;
     return data.map(CampaignItem.fromMap).toList();
@@ -328,7 +329,7 @@ class AppRepository {
 
   Future<List<AwarenessItem>> fetchAwareness() async {
     final db = client;
-    if (db == null) return AwarenessItem.demo;
+    if (db == null) return <AwarenessItem>[];
     final data = await db
         .from('blogs')
         .select('*')
@@ -338,7 +339,7 @@ class AppRepository {
 
   Future<List<BloodBankItem>> fetchBloodBanks() async {
     final db = client;
-    if (db == null) return BloodBankItem.demo;
+    if (db == null) return <BloodBankItem>[];
     final data =
         await db.from('blood_banks').select('*').order('name') as List<dynamic>;
     return data.map(BloodBankItem.fromMap).toList();
@@ -346,7 +347,7 @@ class AppRepository {
 
   Future<List<OrganizationItem>> fetchOrganizations() async {
     final db = client;
-    if (db == null) return OrganizationItem.demo;
+    if (db == null) return <OrganizationItem>[];
     final orgData =
         await db.from('organizations').select('*').order('name') as List<dynamic>;
     final userData =
@@ -369,7 +370,7 @@ class AppRepository {
 
   Future<List<MemberItem>> fetchOrganizationMembers(String organizationId) async {
     final db = client;
-    if (db == null) return MemberItem.demo;
+    if (db == null) return <MemberItem>[];
     final users = await db
         .from('users')
         .select('*')
@@ -396,20 +397,20 @@ class AppRepository {
   Future<List<DonationEntry>> fetchDonationHistory() async {
     final db = client;
     final user = currentUser;
-    if (db == null || user == null) return DonationEntry.demo;
+    if (db == null || user == null) return <DonationEntry>[];
     final donor = await db
         .from('donor_profiles')
         .select('id')
         .eq('user_id', user.id)
         .maybeSingle();
     final donorId = donor?['id']?.toString();
-    if (donorId == null) return DonationEntry.demo;
+    if (donorId == null) return <DonationEntry>[];
     final rows = await db
         .from('donation_history')
         .select('*')
         .eq('donor_id', donorId)
         .order('donated_at', ascending: false) as List<dynamic>;
-    if (rows.isEmpty) return DonationEntry.demo;
+    if (rows.isEmpty) return <DonationEntry>[];
     return rows.map(DonationEntry.fromMap).toList();
   }
 
@@ -585,7 +586,7 @@ class AppRepository {
     );
     await Future<void>.delayed(const Duration(milliseconds: 500));
     if (currentUser == null) {
-      throw Exception('à¦°à§‡à¦œà¦¿à¦¸à§à¦Ÿà§à¦°à§‡à¦¶à¦¨ à¦¹à§Ÿà§‡à¦›à§‡, à¦à¦¬à¦¾à¦° à¦²à¦— à¦‡à¦¨ à¦•à¦°à§à¦¨');
+      throw Exception('রেজিস্ট্রেশন হয়েছে, এবার লগ ইন করুন');
     }
     await createOrganization({
       'name': name,
@@ -623,6 +624,12 @@ class AppRepository {
     if (db == null) throw Exception('Supabase config missing');
     await db.from('campaigns').delete().eq('id', id);
   }
+
+  Future<void> deleteOrganization(String id) async {
+    final db = client;
+    if (db == null) throw Exception('Supabase config missing');
+    await db.from('organizations').delete().eq('id', id);
+  }
 }
 
 class HomeBundle {
@@ -644,14 +651,14 @@ class HomeBundle {
   final int totalDonors;
   final int totalRequests;
 
-  factory HomeBundle.demo() => HomeBundle(
-        requests: RequestItem.demo,
-        campaigns: CampaignItem.demo,
-        awareness: AwarenessItem.demo,
-        organizations: OrganizationItem.demo,
-        totalUsers: 462,
-        totalDonors: 201,
-        totalRequests: 47,
+  factory HomeBundle.empty() => HomeBundle(
+        requests: const [],
+        campaigns: const [],
+        awareness: const [],
+        organizations: const [],
+        totalUsers: 0,
+        totalDonors: 0,
+        totalRequests: 0,
       );
 }
 
@@ -700,7 +707,7 @@ class DonorItem {
     return DateTime.now().difference(parsed).inDays >= 90;
   }
 
-  String get availabilityText => eligible ? 'à¦¸à¦®à¦¯à¦¼ à¦¹à¦¯à¦¼à§‡à¦›à§‡' : 'à¦¸à¦®à¦¯à¦¼ à¦¹à¦¯à¦¼à¦¨à¦¿';
+  String get availabilityText => eligible ? 'সময় হয়েছে' : 'সময় হয়নি';
 
   factory DonorItem.fromMap(dynamic raw) {
     final map = Map<String, dynamic>.from(raw as Map);
@@ -722,7 +729,7 @@ class DonorItem {
       name: 'Md Jahurul Haque',
       phone: '01799298672',
       bloodGroup: 'B+',
-      location: 'à¦¸à§à¦œà¦¾à¦¨à¦—à¦°, à¦ªà¦¾à¦¬à¦¨à¦¾',
+      location: 'সুজানগর, পাবনা',
       lastDonation: '2025-11-04',
       totalDonation: 4,
       verified: true,
@@ -732,17 +739,17 @@ class DonorItem {
       name: 'Md Abu Bokkar',
       phone: '01711111111',
       bloodGroup: 'O+',
-      location: 'à¦¬à§‡à¦¡à¦¼à¦¾, à¦ªà¦¾à¦¬à¦¨à¦¾',
+      location: 'বেড়া, পাবনা',
       lastDonation: '2025-09-10',
       totalDonation: 3,
       verified: true,
     ),
     DonorItem(
       id: '3',
-      name: 'à¦†à¦°à¦¿à¦« à¦¹à§‹à¦¸à§‡à¦¨',
+      name: 'আরিফ হোসেন',
       phone: '01733333333',
       bloodGroup: 'A+',
-      location: 'à¦¸à¦¾à¦à¦¥à¦¿à¦¯à¦¼à¦¾, à¦ªà¦¾à¦¬à¦¨à¦¾',
+      location: 'সাঁথিয়া, পাবনা',
       lastDonation: '2026-03-20',
       totalDonation: 1,
       verified: false,
@@ -794,10 +801,10 @@ class RequestItem {
   static const demo = [
     RequestItem(
       id: '1',
-      patientName: 'à¦°à¦¾à¦¯à¦¼à¦¹à¦¾à¦¨',
+      patientName: 'রায়হান',
       bloodGroup: 'O+',
-      hospital: 'à¦¬à§‡à¦¡à¦¼à¦¾ à¦‰à¦ªà¦œà§‡à¦²à¦¾ à¦¸à§à¦¬à¦¾à¦¸à§à¦¥à§à¦¯ à¦•à¦®à¦ªà§à¦²à§‡à¦•à§à¦¸',
-      location: 'à¦¬à§‡à¦¡à¦¼à¦¾, à¦ªà¦¾à¦¬à¦¨à¦¾',
+      hospital: 'বেড়া উপজেলা স্বাস্থ্য কমপ্লেক্স',
+      location: 'বেড়া, পাবনা',
       units: 2,
       contactPhone: '01744444444',
       urgency: 'Emergency',
@@ -806,10 +813,10 @@ class RequestItem {
     ),
     RequestItem(
       id: '2',
-      patientName: 'à¦¶à¦¾à¦“à¦¨',
+      patientName: 'শাওন',
       bloodGroup: 'B+',
-      hospital: 'à¦¢à¦¾à¦•à¦¾ à¦®à§‡à¦¡à¦¿à¦•à§‡à¦²',
-      location: 'à¦¢à¦¾à¦•à¦¾',
+      hospital: 'ঢাকা মেডিকেল',
+      location: 'ঢাকা',
       units: 1,
       contactPhone: '01755555555',
       urgency: 'Urgent',
@@ -838,11 +845,11 @@ class CampaignItem {
 
   String get state {
     final date = DateTime.tryParse(eventDate);
-    if (date == null) return 'à¦†à¦¸à¦¨à§à¦¨';
+    if (date == null) return 'আসন্ন';
     final diff = DateTime.now().difference(date).inDays;
-    if (diff < 0) return 'à¦†à¦¸à¦¨à§à¦¨';
-    if (diff <= 1) return 'à¦šà¦²à¦®à¦¾à¦¨';
-    return 'à¦¸à¦®à§à¦ªà¦¨à§à¦¨';
+    if (diff < 0) return 'আসন্ন';
+    if (diff <= 1) return 'চলমান';
+    return 'সম্পন্ন';
   }
 
   factory CampaignItem.fromMap(dynamic raw) {
@@ -860,19 +867,19 @@ class CampaignItem {
   static const demo = [
     CampaignItem(
       id: '1',
-      title: 'à¦«à§à¦°à¦¿ à¦®à§‡à¦¡à¦¿à¦•à§‡à¦² à¦•à§à¦¯à¦¾à¦®à§à¦ª',
-      summary: 'à¦¬à¦¿à¦¨à¦¾à¦®à§‚à¦²à§à¦¯à§‡ à¦¸à§à¦¬à¦¾à¦¸à§à¦¥à§à¦¯à¦¸à§‡à¦¬à¦¾ à¦“ à¦°à¦•à§à¦¤à¦¦à¦¾à¦¤à¦¾ à¦¨à¦¿à¦¬à¦¨à§à¦§à¦¨',
-      location: 'à¦¬à§‡à¦¡à¦¼à¦¾ à¦‰à¦ªà¦œà§‡à¦²à¦¾',
+      title: 'ফ্রি মেডিকেল ক্যাম্প',
+      summary: 'বিনামূল্যে স্বাস্থ্যসেবা ও রক্তদাতা নিবন্ধন',
+      location: 'বেড়া উপজেলা',
       eventDate: '2026-04-24',
-      organizer: 'à¦¬à§‡à¦¡à¦¼à¦¾ à¦°à¦•à§à¦¤à¦¦à¦¾à¦¤à¦¾ à¦‡à¦‰à¦¨à¦¿à¦Ÿ',
+      organizer: 'বেড়া রক্তদাতা ইউনিট',
     ),
     CampaignItem(
       id: '2',
-      title: 'à¦¬à¦¿à¦¶à§à¦¬ à¦°à¦•à§à¦¤à¦¦à¦¾à¦¤à¦¾ à¦¦à¦¿à¦¬à¦¸ à¦•à§à¦¯à¦¾à¦®à§à¦ª',
-      summary: 'à¦°à¦•à§à¦¤à¦¦à¦¾à¦¨à§‡à¦° à¦—à§à¦°à§à¦¤à§à¦¬ à¦¨à¦¿à¦¯à¦¼à§‡ à¦œà¦¨à¦¸à¦šà§‡à¦¤à¦¨à¦¤à¦¾',
-      location: 'à¦ªà¦¾à¦¬à¦¨à¦¾ à¦¸à¦¦à¦°',
+      title: 'বিশ্ব রক্তদাতা দিবস ক্যাম্প',
+      summary: 'রক্তদানের গুরুত্ব নিয়ে জনসচেতনতা',
+      location: 'পাবনা সদর',
       eventDate: '2026-05-10',
-      organizer: 'à¦¬à§‡à¦¡à¦¼à¦¾ à¦°à¦•à§à¦¤à¦¦à¦¾à¦¤à¦¾ à¦‡à¦‰à¦¨à¦¿à¦Ÿ',
+      organizer: 'বেড়া রক্তদাতা ইউনিট',
     ),
   ];
 }
@@ -906,16 +913,16 @@ class AwarenessItem {
   static const demo = [
     AwarenessItem(
       id: '1',
-      title: 'à¦°à¦•à§à¦¤à¦¦à¦¾à¦¨à§‡à¦° à¦†à¦—à§‡ à¦“ à¦ªà¦°à§‡ à¦•à§€ à¦•à¦°à¦¬à§‡à¦¨?',
-      excerpt: 'à¦°à¦•à§à¦¤à¦¦à¦¾à¦¨à§‡à¦° à¦†à¦—à§‡ à¦¬à¦¿à¦¶à§à¦°à¦¾à¦®, à¦ªà¦°à§‡ à¦ªà¦¾à¦¨à¦¿ à¦“ à¦¹à¦¾à¦²à¦•à¦¾ à¦–à¦¾à¦¬à¦¾à¦° à¦–à§à¦¬ à¦œà¦°à§à¦°à¦¿à¥¤',
-      author: 'à¦¡à¦¾. à¦¤à¦¾à¦¨à¦­à§€à¦°',
+      title: 'রক্তদানের আগে ও পরে কী করবেন?',
+      excerpt: 'রক্তদানের আগে বিশ্রাম, পরে পানি ও হালকা খাবার খুব জরুরি।',
+      author: 'ডা. তানভীর',
       date: '2026-04-08',
     ),
     AwarenessItem(
       id: '2',
-      title: 'à¦•à¦¾à¦°à¦¾ à¦°à¦•à§à¦¤ à¦¦à¦¿à¦¤à§‡ à¦ªà¦¾à¦°à¦¬à§‡à¦¨ à¦¨à¦¾?',
-      excerpt: 'à¦¸à¦¾à¦®à¦¯à¦¼à¦¿à¦• à¦…à¦¸à§à¦¸à§à¦¥à¦¤à¦¾, à¦•à¦® à¦“à¦œà¦¨ à¦¬à¦¾ à¦•à¦¿à¦›à§ à¦“à¦·à§à¦§ à¦šà¦²à¦²à§‡ à¦…à¦ªà§‡à¦•à§à¦·à¦¾ à¦•à¦°à¦¾ à¦‰à¦šà¦¿à¦¤à¥¤',
-      author: 'à¦¬à§‡à¦¡à¦¼à¦¾ à¦°à¦•à§à¦¤à¦¦à¦¾à¦¤à¦¾ à¦‡à¦‰à¦¨à¦¿à¦Ÿ',
+      title: 'কারা রক্ত দিতে পারবেন না?',
+      excerpt: 'সাময়িক অসুস্থতা, কম ওজন বা কিছু ওষুধ চললে অপেক্ষা করা উচিত।',
+      author: 'বেড়া রক্তদাতা ইউনিট',
       date: '2026-04-10',
     ),
   ];
@@ -953,9 +960,9 @@ class BloodBankItem {
   static const demo = [
     BloodBankItem(
       id: '1',
-      name: 'à¦¬à§‡à¦¡à¦¼à¦¾ à¦‰à¦ªà¦œà§‡à¦²à¦¾ à¦¸à§à¦¬à¦¾à¦¸à§à¦¥à§à¦¯ à¦•à¦®à¦ªà§à¦²à§‡à¦•à§à¦¸',
+      name: 'বেড়া উপজেলা স্বাস্থ্য কমপ্লেক্স',
       type: 'hospital',
-      address: 'à¦¬à§‡à¦¡à¦¼à¦¾, à¦ªà¦¾à¦¬à¦¨à¦¾',
+      address: 'বেড়া, পাবনা',
       phone: '01766666666',
       verified: true,
     ),
@@ -1018,10 +1025,10 @@ class OrganizationItem {
   static const demo = [
     OrganizationItem(
       id: '1',
-      name: 'à¦¬à§‡à¦¡à¦¼à¦¾ à¦°à¦•à§à¦¤à¦¦à¦¾à¦¤à¦¾ à¦‡à¦‰à¦¨à¦¿à¦Ÿ',
+      name: 'বেড়া রক্তদাতা ইউনিট',
       slug: 'bera-raktodata-unit',
-      description: 'à¦¬à§‡à¦¡à¦¼à¦¾à¦° à¦¸à¦•à§à¦°à¦¿à¦¯à¦¼ à¦°à¦•à§à¦¤à¦¦à¦¾à¦¤à¦¾ à¦“ à¦¸à§à¦¬à§‡à¦šà§à¦›à¦¾à¦¸à§‡à¦¬à§€ à¦¸à¦‚à¦—à¦ à¦¨',
-      location: 'à¦¬à§‡à¦¡à¦¼à¦¾, à¦ªà¦¾à¦¬à¦¨à¦¾',
+      description: 'বেড়ার সক্রিয় রক্তদাতা ও স্বেচ্ছাসেবী সংগঠন',
+      location: 'বেড়া, পাবনা',
       phone: '01777777777',
       email: 'bera@example.com',
       logoUrl: '',
@@ -1060,7 +1067,7 @@ class MemberItem {
       id: map['id'].toString(),
       name: (map['full_name'] ?? '').toString(),
       phone: (map['phone'] ?? '').toString(),
-      bloodGroup: (donor?['blood_group'] ?? 'â€”').toString(),
+      bloodGroup: (donor?['blood_group'] ?? '—').toString(),
       lastDonation: (donor?['last_donated_at'] ?? '').toString(),
       totalDonations: ((donor?['total_donations'] ?? 0) as num).toInt(),
     );
@@ -1148,26 +1155,26 @@ class AppShell extends StatelessWidget {
                 children: [
                   NavButton(
                     icon: Icons.home_rounded,
-                    label: 'à¦¹à§‹à¦®',
+                    label: 'হোম',
                     active: navigationShell.currentIndex == 0,
                     onTap: () => navigationShell.goBranch(0),
                   ),
                   NavButton(
                     icon: Icons.search_rounded,
-                    label: 'à¦¦à¦¾à¦¤à¦¾',
+                    label: 'দাতা',
                     active: navigationShell.currentIndex == 1,
                     onTap: () => navigationShell.goBranch(1),
                   ),
                   const SizedBox(width: 60),
                   NavButton(
                     icon: Icons.campaign_rounded,
-                    label: 'à¦•à§à¦¯à¦¾à¦®à§à¦ªà§‡à¦‡à¦¨',
+                    label: 'ক্যাম্পেইন',
                     active: navigationShell.currentIndex == 3,
                     onTap: () => navigationShell.goBranch(3),
                   ),
                   NavButton(
                     icon: Icons.person_rounded,
-                    label: 'à¦†à¦®à¦¾à¦°',
+                    label: 'আমার',
                     active: navigationShell.currentIndex == 4,
                     onTap: () => navigationShell.goBranch(4),
                   ),
@@ -1257,7 +1264,7 @@ class HomeScreen extends StatelessWidget {
         return FutureBuilder<HomeBundle>(
           future: repository.homeBundle(),
           builder: (context, snapshot) {
-            final data = snapshot.data ?? HomeBundle.demo();
+            final data = snapshot.data ?? HomeBundle.empty();
             return Scaffold(
               backgroundColor: kBg,
               body: ListView(
@@ -1353,6 +1360,8 @@ class HomeScreen extends StatelessWidget {
                           question: 'কতদিন পর আবার রক্ত দেওয়া যায়?',
                           answer: 'সাধারণভাবে অন্তত ৩ মাস পর আবার রক্ত দেওয়া ভালো।',
                         ),
+                        const SizedBox(height: 16),
+                        const FooterCredit(),
                       ],
                     ),
                   ),
@@ -1431,7 +1440,7 @@ class HomeHeader extends StatelessWidget {
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
-                              '🩸 রক্তদান করুন',
+                              'রক্তদান করুন',
                               style: poppins(
                                 size: 10,
                                 weight: FontWeight.w600,
@@ -1529,7 +1538,7 @@ class HomeActionButtons extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: _TopActionButton(
-              text: 'সংগঠন হিসাবে যুক্ত হোন',
+              text: 'সংগঠন হিসাবে যুক্ত হন',
               filled: false,
               onTap: onOrganizationTap,
             ),
@@ -1605,7 +1614,7 @@ class AppHeaderRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'à¦¬à§‡à¦¡à¦¼à¦¾ à¦°à¦•à§à¦¤à¦¦à¦¾à¦¤à¦¾',
+                'বেড়া রক্তদাতা',
                 style: poppins(
                   size: 14,
                   weight: FontWeight.w700,
@@ -1613,7 +1622,7 @@ class AppHeaderRow extends StatelessWidget {
                 ),
               ),
               Text(
-                'à¦‡à¦‰à¦¨à¦¿à¦Ÿ â€¢ à¦ªà¦¾à¦¬à¦¨à¦¾',
+                'ইউনিট • পাবনা',
                 style: poppins(
                   size: 9,
                   weight: FontWeight.w500,
@@ -1667,15 +1676,15 @@ class StatsStrip extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: _StatColumn(label: 'à¦¬à§à¦¯à¦¬à¦¹à¦¾à¦°à¦•à¦¾à¦°à§€', value: '$totalUsers+'),
+            child: _StatColumn(label: 'ব্যবহারকারী', value: '$totalUsers+'),
           ),
           const _VerticalDivider(),
           Expanded(
-            child: _StatColumn(label: 'à¦°à¦•à§à¦¤à¦¦à¦¾à¦¤à¦¾', value: '$totalDonors+'),
+            child: _StatColumn(label: 'রক্তদাতা', value: '$totalDonors+'),
           ),
           const _VerticalDivider(),
           Expanded(
-            child: _StatColumn(label: 'à¦…à¦¨à§à¦°à§‹à¦§', value: '$totalRequests+'),
+            child: _StatColumn(label: 'অনুরোধ', value: '$totalRequests+'),
           ),
         ],
       ),
@@ -1726,28 +1735,28 @@ class QuickActionGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final items = [
       QuickActionData(
-        label: 'à¦¦à¦¾à¦¤à¦¾ à¦–à§à¦à¦œà§à¦¨',
+        label: 'দাতা খুঁজুন',
         icon: Icons.search_rounded,
         color: kRed,
         bg: kRedSoft,
         onTap: () => context.go('/donors'),
       ),
       QuickActionData(
-        label: 'à¦…à¦¨à§à¦°à§‹à¦§ à¦¦à¦¿à¦¨',
+        label: 'অনুরোধ দিন',
         icon: Icons.note_add_rounded,
         color: const Color(0xFF1976D2),
         bg: const Color(0xFFE3F2FD),
         onTap: () => context.push('/request/new'),
       ),
       QuickActionData(
-        label: 'à¦¬à§à¦²à¦¾à¦¡ à¦¬à§à¦¯à¦¾à¦‚à¦•',
+        label: 'ব্লাড ব্যাংক',
         icon: Icons.local_hospital_rounded,
         color: kGreen,
         bg: kGreenSoft,
         onTap: () => context.push('/banks'),
       ),
       QuickActionData(
-        label: 'à¦•à§à¦¯à¦¾à¦®à§à¦ªà§‡à¦‡à¦¨',
+        label: 'ক্যাম্পেইন',
         icon: Icons.campaign_rounded,
         color: kOrange,
         bg: kOrangeSoft,
@@ -1838,12 +1847,12 @@ class UrgentBanner extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'à¦œà¦°à§à¦°à¦¿ à¦°à¦•à§à¦¤à§‡à¦° à¦…à¦¨à§à¦°à§‹à¦§ à¦šà¦²à¦›à§‡',
+                  'জরুরি রক্তের অনুরোধ চলছে',
                   style: poppins(size: 11, weight: FontWeight.w700, color: kRed),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'à¦“à¦ªà§‡à¦¨ à¦…à¦¨à§à¦°à§‹à¦§à§‡ à¦¦à§à¦°à§à¦¤ à¦¸à¦¾à¦¡à¦¼à¦¾ à¦¦à¦¿à¦¨ à¦à¦¬à¦‚ à¦œà§€à¦¬à¦¨ à¦¬à¦¾à¦à¦šà¦¾à¦¤à§‡ à¦à¦—à¦¿à¦¯à¦¼à§‡ à¦†à¦¸à§à¦¨à¥¤',
+                  'ওপেন অনুরোধে দ্রুত সাড়া দিন এবং জীবন বাঁচাতে এগিয়ে আসুন।',
                   style: hind(size: 9, weight: FontWeight.w500, color: kText2),
                 ),
               ],
@@ -1978,7 +1987,7 @@ class DonorMiniCard extends StatelessWidget {
             ),
             alignment: Alignment.center,
             child: Text(
-              donor.name.isEmpty ? 'à¦°' : donor.name.characters.first.toUpperCase(),
+              donor.name.isEmpty ? 'র' : donor.name.characters.first.toUpperCase(),
               style: poppins(size: 14, weight: FontWeight.w700, color: Colors.white),
             ),
           ),
@@ -2043,22 +2052,22 @@ class BenefitsPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const items = [
-      'à¦¹à§ƒà¦¦à¦°à§‹à¦—à§‡à¦° à¦à§à¦à¦•à¦¿ à¦•à¦®à¦¾à¦¤à§‡ à¦¸à¦¹à¦¾à¦¯à¦¼à¦¤à¦¾ à¦•à¦°à§‡',
-      'à¦¶à¦°à§€à¦°à§‡ à¦¨à¦¤à§à¦¨ à¦°à¦•à§à¦¤à¦•à§‹à¦· à¦¤à§ˆà¦°à¦¿à¦¤à§‡ à¦­à§‚à¦®à¦¿à¦•à¦¾ à¦°à¦¾à¦–à§‡',
-      'à¦¨à¦¿à¦¯à¦¼à¦®à¦¿à¦¤ à¦¸à§à¦¬à¦¾à¦¸à§à¦¥à§à¦¯ à¦ªà¦°à§€à¦•à§à¦·à¦¾à¦° à¦¸à§à¦¯à§‹à¦— à¦¬à¦¾à¦¡à¦¼à¦¾à¦¯à¦¼',
-      'à¦®à¦¾à¦¨à¦¸à¦¿à¦• à¦¤à§ƒà¦ªà§à¦¤à¦¿ à¦“ à¦¸à¦¾à¦®à¦¾à¦œà¦¿à¦• à¦¦à¦¾à¦¯à¦¼à¦¬à¦¦à§à¦§à¦¤à¦¾ à¦œà¦¾à¦—à¦¾à¦¯à¦¼',
+      'হৃদরোগের ঝুঁকি কমাতে সহায়তা করে',
+      'শরীরে নতুন রক্তকোষ তৈরি করতে ভূমিকা রাখে',
+      'নিয়মিত স্বাস্থ্য পরীক্ষার সুযোগ বাড়ায়',
+      'মানসিক তৃপ্তি ও সামাজিক দায়বদ্ধতা জাগায়',
     ];
     return StyledCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'à¦°à¦•à§à¦¤à¦¦à¦¾à¦¨à§‡à¦° à¦‰à¦ªà¦•à¦¾à¦°à¦¿à¦¤à¦¾',
+            'রক্তদানের উপকারিতা',
             style: poppins(size: 18, weight: FontWeight.w700, color: kRed),
           ),
           const SizedBox(height: 6),
           Text(
-            'à¦°à¦•à§à¦¤à¦¦à¦¾à¦¨ à¦¶à¦°à§€à¦° à¦“ à¦®à¦¨à§‡à¦° à¦œà¦¨à§à¦¯ à¦‡à¦¤à¦¿à¦¬à¦¾à¦šà¦•à¥¤ à¦¨à¦¿à¦¯à¦¼à¦®à¦¿à¦¤ à¦°à¦•à§à¦¤à¦¦à¦¾à¦¨ à¦œà§€à¦¬à¦¨ à¦¬à¦¾à¦à¦šà¦¾à¦¨à§‹à¦° à¦ªà¦¾à¦¶à¦¾à¦ªà¦¾à¦¶à¦¿ à¦¨à¦¿à¦œà§‡à¦•à§‡à¦“ à¦¸à¦šà§‡à¦¤à¦¨ à¦°à¦¾à¦–à§‡à¥¤',
+            'রক্তদান শরীর ও মনের জন্য ইতিবাচক। নিয়মিত রক্তদান জীবন বাঁচানোর পাশাপাশি নিজেকেও সচেতন রাখে।',
             style: bodyStyle(),
           ),
           const SizedBox(height: 12),
@@ -2147,7 +2156,7 @@ class _DonorsScreenState extends State<DonorsScreen> {
       body: Column(
         children: [
           ScreenHeader(
-            title: 'à¦°à¦•à§à¦¤à¦¦à¦¾à¦¤à¦¾ à¦–à§‹à¦à¦œà¦¾',
+            title: 'রক্তদাতা খোঁজা',
             headerChild: Container(
               margin: const EdgeInsets.only(top: 12),
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -2161,7 +2170,7 @@ class _DonorsScreenState extends State<DonorsScreen> {
               child: TextField(
                 style: hind(size: 12, color: Colors.white),
                 decoration: InputDecoration(
-                  hintText: 'à¦°à¦•à§à¦¤à§‡à¦° à¦—à§à¦°à§à¦ª à¦¦à¦¿à¦¯à¦¼à§‡ à¦–à§à¦à¦œà§à¦¨',
+                  hintText: 'রক্তের গ্রুপ দিয়ে খুঁজুন',
                   hintStyle: hind(
                     size: 12,
                     color: Colors.white.withValues(alpha: 0.50),
@@ -2202,11 +2211,11 @@ class _DonorsScreenState extends State<DonorsScreen> {
                 FutureBuilder<List<DonorItem>>(
                   future: donorsFuture,
                   builder: (context, snapshot) {
-                    final donors = snapshot.data ?? DonorItem.demo;
+                    final donors = snapshot.data ?? const <DonorItem>[];
                     if (donors.isEmpty) {
                       return const EmptyStateCard(
-                        title: 'à¦•à§‹à¦¨à§‹ à¦¦à¦¾à¦¤à¦¾ à¦ªà¦¾à¦“à¦¯à¦¼à¦¾ à¦¯à¦¾à¦¯à¦¼à¦¨à¦¿',
-                        subtitle: 'à¦…à¦¨à§à¦¯ à¦°à¦•à§à¦¤à§‡à¦° à¦—à§à¦°à§à¦ª à¦¬à§‡à¦›à§‡ à¦†à¦¬à¦¾à¦° à¦–à§à¦à¦œà§à¦¨à¥¤',
+                        title: 'কোনো দাতা পাওয়া যায়নি',
+                        subtitle: 'অন্য রক্তের গ্রুপ বেছে আবার খুঁজুন।',
                       );
                     }
                     return Column(
@@ -2221,6 +2230,8 @@ class _DonorsScreenState extends State<DonorsScreen> {
                     );
                   },
                 ),
+                const SizedBox(height: 16),
+                const FooterCredit(),
               ],
             ),
           ),
@@ -2262,9 +2273,9 @@ class _RequestsScreenState extends State<RequestsScreen> {
       body: Column(
         children: [
           ScreenHeader(
-            title: 'à¦°à¦•à§à¦¤à§‡à¦° à¦…à¦¨à§à¦°à§‹à¦§',
+            title: 'রক্তের অনুরোধ',
             action: SmallWhiteButton(
-              text: 'à¦¨à¦¤à§à¦¨',
+              text: 'নতুন',
               onTap: () => context.push('/request/new'),
             ),
           ),
@@ -2297,11 +2308,11 @@ class _RequestsScreenState extends State<RequestsScreen> {
                 FutureBuilder<List<RequestItem>>(
                   future: requestsFuture,
                   builder: (context, snapshot) {
-                    final requests = snapshot.data ?? RequestItem.demo;
+                    final requests = snapshot.data ?? const <RequestItem>[];
                     if (requests.isEmpty) {
                       return const EmptyStateCard(
-                        title: 'à¦•à§‹à¦¨à§‹ à¦…à¦¨à§à¦°à§‹à¦§ à¦¨à§‡à¦‡',
-                        subtitle: 'à¦¨à¦¤à§à¦¨ à¦…à¦¨à§à¦°à§‹à¦§ à¦¦à¦¿à¦²à§‡ à¦à¦–à¦¾à¦¨à§‡ à¦¦à§‡à¦–à¦¾à¦¬à§‡à¥¤',
+                        title: 'কোনো অনুরোধ নেই',
+                        subtitle: 'নতুন অনুরোধ দিলে এখানে দেখাবে।',
                       );
                     }
                     return Column(
@@ -2316,6 +2327,8 @@ class _RequestsScreenState extends State<RequestsScreen> {
                     );
                   },
                 ),
+                const SizedBox(height: 16),
+                const FooterCredit(),
               ],
             ),
           ),
@@ -2405,68 +2418,80 @@ class _CampaignsScreenState extends State<CampaignsScreen> {
             child: FutureBuilder<List<CampaignItem>>(
               future: campaignsFuture,
               builder: (context, snapshot) {
-                final items = snapshot.data ?? CampaignItem.demo;
+                final items = snapshot.data ?? const <CampaignItem>[];
                 return FutureBuilder<ProfileBundle?>(
                   future: profileFuture,
                   builder: (context, profileSnapshot) {
                     final isAdmin = profileSnapshot.data?.isAdmin == true;
-                    return ListView.separated(
+                    return ListView(
                       padding: const EdgeInsets.fromLTRB(
                         kScreenPadding,
                         12,
                         kScreenPadding,
                         18,
                       ),
-                      itemBuilder: (context, index) => Column(
-                        children: [
-                          CampaignCard(
-                            item: items[index],
-                            imagePath: index.isEven
-                                ? 'assets/images/one.jpg'
-                                : 'assets/images/two.jpg',
+                      children: [
+                        if (items.isEmpty)
+                          const EmptyStateCard(
+                            title: 'কোনো ক্যাম্পেইন নেই',
+                            subtitle: 'নতুন ক্যাম্পেইন হলে এখানে দেখাবে।',
                           ),
-                          if (isAdmin)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 6),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: OutlinedButton(
-                                      onPressed: () => upsertCampaign(item: items[index]),
-                                      style: OutlinedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10),
+                        ...items.asMap().entries.map(
+                          (entry) => Padding(
+                            padding: const EdgeInsets.only(bottom: kCardGap),
+                            child: Column(
+                              children: [
+                                CampaignCard(
+                                  item: entry.value,
+                                  imagePath: entry.key.isEven
+                                      ? 'assets/images/one.jpg'
+                                      : 'assets/images/two.jpg',
+                                ),
+                                if (isAdmin)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 6),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: OutlinedButton(
+                                            onPressed: () => upsertCampaign(item: entry.value),
+                                            style: OutlinedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                            child: Text(
+                                              'এডিট',
+                                              style: poppins(size: 10, weight: FontWeight.w700, color: kText),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                      child: Text(
-                                        'এডিট',
-                                        style: poppins(size: 10, weight: FontWeight.w700, color: kText),
-                                      ),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            onPressed: () => removeCampaign(entry.value.id),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: kRed,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                            child: Text(
+                                              'ডিলিট',
+                                              style: poppins(size: 10, weight: FontWeight.w700, color: Colors.white),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: ElevatedButton(
-                                      onPressed: () => removeCampaign(items[index].id),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: kRed,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        'ডিলিট',
-                                        style: poppins(size: 10, weight: FontWeight.w700, color: Colors.white),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              ],
                             ),
-                        ],
-                      ),
-                      separatorBuilder: (_, __) => const SizedBox(height: kCardGap),
-                      itemCount: items.length,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        const FooterCredit(),
+                      ],
                     );
                   },
                 );
@@ -2810,6 +2835,10 @@ class _AuthScreenState extends State<AuthScreen> {
                 ),
               ),
             ),
+            const Padding(
+              padding: EdgeInsets.only(bottom: 18),
+              child: FooterCredit(),
+            ),
           ],
         ),
       ),
@@ -2936,7 +2965,7 @@ class ProfileScreen extends StatelessWidget {
                 StyledCard(
                   child: Row(
                     children: [
-                      Expanded(child: ProfileStatCell(label: 'রক্তদান', value: '$total')),
+                      Expanded(child: ProfileStatCell(label: 'রক্তদান', value: '$total')) ,
                       const _VerticalDivider(),
                       Expanded(child: ProfileStatCell(label: 'সর্বশেষ', value: lastDonation.isEmpty ? '—' : formatDate(lastDonation))),
                       const _VerticalDivider(),
@@ -3000,6 +3029,8 @@ class ProfileScreen extends StatelessWidget {
                     onTap: () => context.go('/campaigns'),
                   ),
                 ],
+                const SizedBox(height: 16),
+                const FooterCredit(),
               ],
             ),
           ),
@@ -3025,7 +3056,7 @@ class OrganizationAccountScreen extends StatelessWidget {
     return FutureBuilder<List<MemberItem>>(
       future: repository.fetchOrganizationMembers(org.id),
       builder: (context, snapshot) {
-        final members = snapshot.data ?? MemberItem.demo;
+        final members = snapshot.data ?? const <MemberItem>[];
         final ready = members.where((e) => e.eligible).length;
         final totalDonation = members.fold<int>(0, (sum, e) => sum + e.totalDonations);
         return Scaffold(
@@ -3081,7 +3112,7 @@ class OrganizationAccountScreen extends StatelessWidget {
                         children: [
                           Expanded(child: ProfileStatCell(label: 'সদস্য', value: '${org.memberCount}')),
                           const _VerticalDivider(),
-                          Expanded(child: ProfileStatCell(label: 'সময় হয়েছে', value: '$ready')),
+                          Expanded(child: ProfileStatCell(label: 'সময় হয়েছে', value: '$ready')),
                           const _VerticalDivider(),
                           Expanded(child: ProfileStatCell(label: 'রক্তদান', value: '$totalDonation')),
                         ],
@@ -3125,7 +3156,7 @@ class OrganizationAccountScreen extends StatelessWidget {
                                   children: [
                                     Text(member.name, style: cardTitleStyle()),
                                     const SizedBox(height: 2),
-                                    Text('${member.bloodGroup} • ${member.eligible ? 'সময় হয়েছে' : 'সময় হয়নি'}', style: captionStyle()),
+                                    Text('${member.bloodGroup} • ${member.eligible ? 'সময় হয়েছে' : 'সময় হয়নি'}', style: captionStyle()),
                                   ],
                                 ),
                               ),
@@ -3138,6 +3169,8 @@ class OrganizationAccountScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 16),
+                    const FooterCredit(),
                   ],
                 ),
               ),
@@ -3369,7 +3402,7 @@ class DonorFullCard extends StatelessWidget {
                 ),
                 alignment: Alignment.center,
                 child: Text(
-                  donor.name.isEmpty ? 'à¦°' : donor.name.characters.first.toUpperCase(),
+                  donor.name.isEmpty ? 'র' : donor.name.characters.first.toUpperCase(),
                   style: poppins(size: 16, weight: FontWeight.w700, color: kRed),
                 ),
               ),
@@ -3387,13 +3420,13 @@ class DonorFullCard extends StatelessWidget {
                       runSpacing: 6,
                       children: [
                         StatusTag(
-                          text: donor.eligible ? 'âœ“ à¦¸à¦®à¦¯à¦¼ à¦¹à¦¯à¦¼à§‡à¦›à§‡' : 'âœ“ à¦¸à¦®à¦¯à¦¼ à¦¹à¦¯à¦¼à¦¨à¦¿',
+                          text: donor.eligible ? '✓ সময় হয়েছে' : '✓ সময় হয়নি',
                           bg: kGreenSoft,
                           color: kGreen,
                         ),
                         if (donor.verified)
                           const StatusTag(
-                            text: 'âœ“ à¦­à§‡à¦°à¦¿à¦«à¦¾à¦‡à¦¡',
+                            text: '✓ ভেরিফাইড',
                             bg: Color(0xFFE3F2FD),
                             color: Color(0xFF1976D2),
                           ),
@@ -3433,7 +3466,7 @@ class DonorFullCard extends StatelessWidget {
               ),
               onPressed: () => callPhone(donor.phone, context),
               child: Text(
-                'ðŸ“ž à¦•à¦² à¦•à¦°à§à¦¨',
+                '📞 কল করুন',
                 style: poppins(size: 12, weight: FontWeight.w700, color: Colors.white),
               ),
             ),
@@ -3537,7 +3570,7 @@ class RequestCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     MetaLine(icon: Icons.calendar_today_rounded, text: formatDate(item.requiredDate)),
                     const SizedBox(height: 4),
-                    MetaLine(icon: Icons.bloodtype_outlined, text: '${item.units} à¦¬à§à¦¯à¦¾à¦—'),
+                    MetaLine(icon: Icons.bloodtype_outlined, text: '${item.units} ব্যাগ'),
                   ],
                 ),
               ),
@@ -3555,7 +3588,7 @@ class RequestCard extends StatelessWidget {
                   ),
                   onPressed: () => callPhone(item.contactPhone, context),
                   child: Text(
-                    'à¦¯à§‹à¦—à¦¾à¦¯à§‹à¦—',
+                    'যোগাযোগ',
                     style: poppins(size: 10, weight: FontWeight.w700, color: Colors.white),
                   ),
                 ),
@@ -3653,9 +3686,9 @@ class CampaignCard extends StatelessWidget {
 
 Color campaignBadge(String state) {
   switch (state) {
-    case 'à¦šà¦²à¦®à¦¾à¦¨':
+    case 'চলমান':
       return kOrange;
-    case 'à¦¸à¦®à§à¦ªà¦¨à§à¦¨':
+    case 'সম্পন্ন':
       return kGreen;
     default:
       return kRed;
@@ -3672,22 +3705,34 @@ class AwarenessScreen extends StatelessWidget {
       backgroundColor: kBg,
       body: Column(
         children: [
-          const ScreenHeader(title: 'à¦¬à§à¦²à¦— à¦“ à¦¤à¦¥à§à¦¯'),
+          const ScreenHeader(title: 'ব্লগ ও তথ্য'),
           Expanded(
             child: FutureBuilder<List<AwarenessItem>>(
               future: repository.fetchAwareness(),
               builder: (context, snapshot) {
-                final items = snapshot.data ?? AwarenessItem.demo;
-                return ListView.separated(
+                final items = snapshot.data ?? const <AwarenessItem>[];
+                return ListView(
                   padding: const EdgeInsets.fromLTRB(
                     kScreenPadding,
                     12,
                     kScreenPadding,
                     18,
                   ),
-                  itemBuilder: (context, index) => AwarenessCard(item: items[index]),
-                  separatorBuilder: (_, __) => const SizedBox(height: kCardGap),
-                  itemCount: items.length,
+                  children: [
+                    if (items.isEmpty)
+                      const EmptyStateCard(
+                        title: 'কোনো তথ্য নেই',
+                        subtitle: 'পরে আবার দেখুন।',
+                      ),
+                    ...items.map(
+                      (item) => Padding(
+                        padding: const EdgeInsets.only(bottom: kCardGap),
+                        child: AwarenessCard(item: item),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const FooterCredit(),
+                  ],
                 );
               },
             ),
@@ -3729,7 +3774,7 @@ class AwarenessCard extends StatelessWidget {
                 const SizedBox(height: 6),
                 Text(item.excerpt, style: bodyStyle()),
                 const SizedBox(height: 6),
-                Text('${item.author} â€¢ ${formatDate(item.date)}', style: captionStyle()),
+                Text('${item.author} • ${formatDate(item.date)}', style: captionStyle()),
               ],
             ),
           ),
@@ -3749,67 +3794,74 @@ class BloodBanksScreen extends StatelessWidget {
       backgroundColor: kBg,
       body: Column(
         children: [
-          const ScreenHeader(title: 'à¦¬à§à¦²à¦¾à¦¡ à¦¬à§à¦¯à¦¾à¦‚à¦•'),
+          const ScreenHeader(title: 'ব্লাড ব্যাংক'),
           Expanded(
             child: FutureBuilder<List<BloodBankItem>>(
               future: repository.fetchBloodBanks(),
               builder: (context, snapshot) {
-                final items = snapshot.data ?? BloodBankItem.demo;
+                final items = snapshot.data ?? const <BloodBankItem>[];
                 if (items.isEmpty) {
                   return const Padding(
                     padding: EdgeInsets.all(kScreenPadding),
                     child: EmptyStateCard(
-                      title: 'à¦•à§‹à¦¨à§‹ à¦¬à§à¦²à¦¾à¦¡ à¦¬à§à¦¯à¦¾à¦‚à¦• à¦¨à§‡à¦‡',
-                      subtitle: 'à¦ªà¦°à§‡ à¦†à¦¬à¦¾à¦° à¦¦à§‡à¦–à§à¦¨à¥¤',
+                      title: 'কোনো ব্লাড ব্যাংক নেই',
+                      subtitle: 'পরে আবার দেখুন।',
                     ),
                   );
                 }
-                return ListView.separated(
+                return ListView(
                   padding: const EdgeInsets.fromLTRB(
                     kScreenPadding,
                     12,
                     kScreenPadding,
                     18,
                   ),
-                  itemBuilder: (context, index) => StyledCard(
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 32,
-                          height: 32,
-                          decoration: BoxDecoration(
-                            color: kGreenSoft,
-                            borderRadius: BorderRadius.circular(9),
-                          ),
-                          child: const Icon(
-                            Icons.local_hospital_rounded,
-                            color: kGreen,
-                            size: 18,
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ...items.map(
+                      (item) => Padding(
+                        padding: const EdgeInsets.only(bottom: kCardGap),
+                        child: StyledCard(
+                          child: Row(
                             children: [
-                              Text(items[index].name, style: cardTitleStyle()),
-                              const SizedBox(height: 3),
-                              Text(items[index].address, style: bodyStyle()),
+                              Container(
+                                width: 32,
+                                height: 32,
+                                decoration: BoxDecoration(
+                                  color: kGreenSoft,
+                                  borderRadius: BorderRadius.circular(9),
+                                ),
+                                child: const Icon(
+                                  Icons.local_hospital_rounded,
+                                  color: kGreen,
+                                  size: 18,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(item.name, style: cardTitleStyle()),
+                                    const SizedBox(height: 3),
+                                    Text(item.address, style: bodyStyle()),
+                                  ],
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () => callPhone(item.phone, context),
+                                child: Text(
+                                  'কল',
+                                  style: poppins(size: 10, weight: FontWeight.w700, color: kRed),
+                                ),
+                              ),
                             ],
                           ),
                         ),
-                        TextButton(
-                          onPressed: () => callPhone(items[index].phone, context),
-                          child: Text(
-                            'à¦•à¦²',
-                            style: poppins(size: 10, weight: FontWeight.w700, color: kRed),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                  separatorBuilder: (_, __) => const SizedBox(height: kCardGap),
-                  itemCount: items.length,
+                    const SizedBox(height: 16),
+                    const FooterCredit(),
+                  ],
                 );
               },
             ),
@@ -3820,9 +3872,36 @@ class BloodBanksScreen extends StatelessWidget {
   }
 }
 
-class OrganizationsScreen extends StatelessWidget {
+class OrganizationsScreen extends StatefulWidget {
   const OrganizationsScreen({super.key, required this.repository});
   final AppRepository repository;
+
+  @override
+  State<OrganizationsScreen> createState() => _OrganizationsScreenState();
+}
+
+class _OrganizationsScreenState extends State<OrganizationsScreen> {
+  late Future<List<OrganizationItem>> organizationsFuture;
+  late Future<ProfileBundle?> profileFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    organizationsFuture = widget.repository.fetchOrganizations();
+    profileFuture = widget.repository.myProfile();
+  }
+
+  void reload() {
+    setState(() {
+      organizationsFuture = widget.repository.fetchOrganizations();
+      profileFuture = widget.repository.myProfile();
+    });
+  }
+
+  Future<void> removeOrganization(String id) async {
+    await widget.repository.deleteOrganization(id);
+    reload();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -3831,30 +3910,76 @@ class OrganizationsScreen extends StatelessWidget {
       body: Column(
         children: [
           ScreenHeader(
-            title: 'à¦¸à¦‚à¦—à¦ à¦¨à¦¸à¦®à§‚à¦¹',
+            title: 'সংগঠনসমূহ',
             action: SmallWhiteButton(
-              text: 'à¦¨à¦¤à§à¦¨',
+              text: 'নতুন',
               onTap: () => context.push('/organizations/new'),
             ),
           ),
           Expanded(
             child: FutureBuilder<List<OrganizationItem>>(
-              future: repository.fetchOrganizations(),
+              future: organizationsFuture,
               builder: (context, snapshot) {
-                final items = snapshot.data ?? OrganizationItem.demo;
-                return ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(
-                    kScreenPadding,
-                    12,
-                    kScreenPadding,
-                    18,
-                  ),
-                  itemBuilder: (context, index) => OrganizationCard(
-                    item: items[index],
-                    onTap: () => context.push('/organizations/${items[index].slug}'),
-                  ),
-                  separatorBuilder: (_, __) => const SizedBox(height: kCardGap),
-                  itemCount: items.length,
+                final items = snapshot.data ?? const <OrganizationItem>[];
+                return FutureBuilder<ProfileBundle?>(
+                  future: profileFuture,
+                  builder: (context, profileSnapshot) {
+                    final isAdmin = profileSnapshot.data?.isAdmin == true;
+                    return ListView(
+                      padding: const EdgeInsets.fromLTRB(
+                        kScreenPadding,
+                        12,
+                        kScreenPadding,
+                        18,
+                      ),
+                      children: [
+                        if (items.isEmpty)
+                          const EmptyStateCard(
+                            title: 'কোনো সংগঠন নেই',
+                            subtitle: 'নতুন সংগঠন যুক্ত হলে এখানে দেখাবে।',
+                          ),
+                        ...items.map(
+                          (item) => Padding(
+                            padding: const EdgeInsets.only(bottom: kCardGap),
+                            child: Column(
+                              children: [
+                                OrganizationCard(
+                                  item: item,
+                                  onTap: () => context.push('/organizations/${item.slug}'),
+                                ),
+                                if (isAdmin)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 6),
+                                    child: SizedBox(
+                                      width: double.infinity,
+                                      child: ElevatedButton(
+                                        onPressed: () => removeOrganization(item.id),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: kRed,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'ডিলিট',
+                                          style: poppins(
+                                            size: 10,
+                                            weight: FontWeight.w700,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        const FooterCredit(),
+                      ],
+                    );
+                  },
                 );
               },
             ),
@@ -3892,7 +4017,7 @@ class OrganizationCard extends StatelessWidget {
               children: [
                 Expanded(child: Text(item.location, style: captionStyle())),
                 Text(
-                  '${item.memberCount} à¦œà¦¨',
+                  '${item.memberCount} জন',
                   style: poppins(size: 10, weight: FontWeight.w700, color: kRed),
                 ),
               ],
@@ -3920,12 +4045,30 @@ class OrganizationDetailsScreen extends StatelessWidget {
       backgroundColor: kBg,
       body: Column(
         children: [
-          const ScreenHeader(title: 'à¦¸à¦‚à¦—à¦ à¦¨à§‡à¦° à¦ªà§à¦°à§‹à¦«à¦¾à¦‡à¦²'),
+          const ScreenHeader(title: 'সংগঠনের প্রোফাইল'),
           Expanded(
             child: FutureBuilder<List<OrganizationItem>>(
               future: repository.fetchOrganizations(),
               builder: (context, snapshot) {
-                final orgs = snapshot.data ?? OrganizationItem.demo;
+                final orgs = snapshot.data ?? const <OrganizationItem>[];
+                if (orgs.isEmpty) {
+                  return ListView(
+                    padding: const EdgeInsets.fromLTRB(
+                      kScreenPadding,
+                      12,
+                      kScreenPadding,
+                      18,
+                    ),
+                    children: const [
+                      EmptyStateCard(
+                        title: 'কোনো সংগঠন নেই',
+                        subtitle: 'পরে আবার দেখুন।',
+                      ),
+                      SizedBox(height: 16),
+                      FooterCredit(),
+                    ],
+                  );
+                }
                 final org = orgs.firstWhere(
                   (item) => item.slug == slug,
                   orElse: () => orgs.first,
@@ -3933,7 +4076,7 @@ class OrganizationDetailsScreen extends StatelessWidget {
                 return FutureBuilder<List<MemberItem>>(
                   future: repository.fetchOrganizationMembers(org.id),
                   builder: (context, memberSnapshot) {
-                    final members = memberSnapshot.data ?? MemberItem.demo;
+                    final members = memberSnapshot.data ?? const <MemberItem>[];
                     return ListView(
                       padding: const EdgeInsets.fromLTRB(
                         kScreenPadding,
@@ -3944,7 +4087,7 @@ class OrganizationDetailsScreen extends StatelessWidget {
                       children: [
                         OrganizationCard(item: org),
                         const SizedBox(height: kSectionGap),
-                        SectionHeading(title: 'à¦¯à¦¾à¦°à¦¾ à¦¯à§à¦•à§à¦¤ à¦¹à¦¯à¦¼à§‡à¦›à§‡'),
+                        SectionHeading(title: 'যারা যুক্ত হয়েছে'),
                         const SizedBox(height: 10),
                         ...members.map(
                           (member) => Padding(
@@ -3978,7 +4121,7 @@ class OrganizationDetailsScreen extends StatelessWidget {
                                   TextButton(
                                     onPressed: () => callPhone(member.phone, context),
                                     child: Text(
-                                      'à¦•à¦²',
+                                      'কল',
                                       style: poppins(size: 10, weight: FontWeight.w700, color: kRed),
                                     ),
                                   ),
@@ -3987,6 +4130,8 @@ class OrganizationDetailsScreen extends StatelessWidget {
                             ),
                           ),
                         ),
+                        const SizedBox(height: 16),
+                        const FooterCredit(),
                       ],
                     );
                   },
@@ -4038,7 +4183,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
       });
       if (mounted) {
         ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('à¦…à¦¨à§à¦°à§‹à¦§ à¦¸à§‡à¦­ à¦¹à¦¯à¦¼à§‡à¦›à§‡')));
+            .showSnackBar(const SnackBar(content: Text('অনুরোধ সেভ হয়েছে')));
         Navigator.pop(context);
       }
     } catch (e) {
@@ -4052,13 +4197,13 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
   @override
   Widget build(BuildContext context) {
     return FormShell(
-      title: 'à¦°à¦•à§à¦¤à§‡à¦° à¦…à¦¨à§à¦°à§‹à¦§ à¦¦à¦¿à¦¨',
+      title: 'রক্তের অনুরোধ দিন',
       children: [
-        FormLabel('à¦°à§‹à¦—à§€à¦° à¦¨à¦¾à¦®'),
+        FormLabel('রোগীর নাম'),
         const SizedBox(height: 6),
         TextField(controller: patientController),
         const SizedBox(height: 10),
-        FormLabel('à¦°à¦•à§à¦¤à§‡à¦° à¦—à§à¦°à§à¦ª'),
+        FormLabel('রক্তের গ্রুপ'),
         const SizedBox(height: 6),
         DropdownButtonFormField<String>(
           initialValue: bloodGroup,
@@ -4068,23 +4213,23 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
           onChanged: (value) => setState(() => bloodGroup = value ?? 'B+'),
         ),
         const SizedBox(height: 10),
-        FormLabel('à¦¹à¦¾à¦¸à¦ªà¦¾à¦¤à¦¾à¦²'),
+        FormLabel('হাসপাতাল'),
         const SizedBox(height: 6),
         TextField(controller: hospitalController),
         const SizedBox(height: 10),
-        FormLabel('à¦²à§‹à¦•à§‡à¦¶à¦¨'),
+        FormLabel('লোকেশন'),
         const SizedBox(height: 6),
         TextField(controller: locationController),
         const SizedBox(height: 10),
-        FormLabel('à¦¯à§‹à¦—à¦¾à¦¯à§‹à¦— à¦¬à§à¦¯à¦•à§à¦¤à¦¿'),
+        FormLabel('যোগাযোগ ব্যক্তি'),
         const SizedBox(height: 6),
         TextField(controller: contactController),
         const SizedBox(height: 10),
-        FormLabel('à¦«à§‹à¦¨'),
+        FormLabel('ফোন'),
         const SizedBox(height: 6),
         TextField(controller: phoneController),
         const SizedBox(height: 10),
-        FormLabel('à¦œà¦°à§à¦°à¦¿ à¦¸à§à¦¤à¦°'),
+        FormLabel('জরুরি স্তর'),
         const SizedBox(height: 6),
         DropdownButtonFormField<String>(
           initialValue: urgency,
@@ -4094,11 +4239,11 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
           onChanged: (value) => setState(() => urgency = value ?? 'Emergency'),
         ),
         const SizedBox(height: 10),
-        FormLabel('à¦…à¦¤à¦¿à¦°à¦¿à¦•à§à¦¤ à¦¤à¦¥à§à¦¯'),
+        FormLabel('অতিরিক্ত তথ্য'),
         const SizedBox(height: 6),
         TextField(controller: detailsController, maxLines: 4),
         const SizedBox(height: 16),
-        RedButton(text: 'à¦¸à§‡à¦­ à¦•à¦°à§à¦¨', onTap: save),
+        RedButton(text: 'সেভ করুন', onTap: save),
       ],
     );
   }
@@ -4164,7 +4309,8 @@ class _CreateOrganizationScreenState extends State<CreateOrganizationScreen> {
       }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('সংগঠন যুক্ত হয়েছে')),
+          const SnackBar(content: Text('সংগঠন যুক্ত হয়েছে')),
+
         );
         context.go('/account');
       }
@@ -4264,7 +4410,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       });
       if (mounted) {
         ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('à¦ªà§à¦°à§‹à¦«à¦¾à¦‡à¦² à¦¸à§‡à¦­ à¦¹à¦¯à¦¼à§‡à¦›à§‡')));
+            .showSnackBar(const SnackBar(content: Text('প্রোফাইল সেভ হয়েছে')));
         Navigator.pop(context);
       }
     } catch (e) {
@@ -4278,17 +4424,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return FormShell(
-      title: 'à¦ªà§à¦°à§‹à¦«à¦¾à¦‡à¦² à¦†à¦ªà¦¡à§‡à¦Ÿ',
+      title: 'প্রোফাইল আপডেট',
       children: [
-        FormLabel('à¦ªà§‚à¦°à§à¦£ à¦¨à¦¾à¦®'),
+        FormLabel('পূর্ণ নাম'),
         const SizedBox(height: 6),
         TextField(controller: nameController),
         const SizedBox(height: 10),
-        FormLabel('à¦«à§‹à¦¨'),
+        FormLabel('ফোন'),
         const SizedBox(height: 6),
         TextField(controller: phoneController),
         const SizedBox(height: 10),
-        FormLabel('à¦°à¦•à§à¦¤à§‡à¦° à¦—à§à¦°à§à¦ª'),
+        FormLabel('রক্তের গ্রুপ'),
         const SizedBox(height: 6),
         DropdownButtonFormField<String>(
           initialValue: bloodGroup,
@@ -4298,23 +4444,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           onChanged: (value) => setState(() => bloodGroup = value ?? 'B+'),
         ),
         const SizedBox(height: 10),
-        FormLabel('à¦¬à¦¿à¦­à¦¾à¦—'),
+        FormLabel('বিভাগ'),
         const SizedBox(height: 6),
         TextField(controller: divisionController),
         const SizedBox(height: 10),
-        FormLabel('à¦œà§‡à¦²à¦¾'),
+        FormLabel('জেলা'),
         const SizedBox(height: 6),
         TextField(controller: districtController),
         const SizedBox(height: 10),
-        FormLabel('à¦‰à¦ªà¦œà§‡à¦²à¦¾'),
+        FormLabel('উপজেলা'),
         const SizedBox(height: 6),
         TextField(controller: upazilaController),
         const SizedBox(height: 10),
-        FormLabel('à¦ à¦¿à¦•à¦¾à¦¨à¦¾'),
+        FormLabel('ঠিকানা'),
         const SizedBox(height: 6),
         TextField(controller: addressController, maxLines: 3),
         const SizedBox(height: 16),
-        RedButton(text: 'à¦¸à§‡à¦­ à¦•à¦°à§à¦¨', onTap: save),
+        RedButton(text: 'সেভ করুন', onTap: save),
       ],
     );
   }
@@ -4336,7 +4482,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       await widget.repository.updatePassword(passwordController.text.trim());
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('পাসওয়ার্ড পরিবর্তন হয়েছে')),
+          const SnackBar(content: Text('পাসওয়ার্ড পরিবর্তন হয়েছে')),
         );
         Navigator.pop(context);
       }
@@ -4385,7 +4531,7 @@ class DonationHistoryScreen extends StatelessWidget {
                 child: FutureBuilder<List<DonationEntry>>(
                   future: repository.fetchDonationHistory(),
                   builder: (context, snapshot) {
-                    final items = snapshot.data ?? DonationEntry.demo;
+                    final items = snapshot.data ?? const <DonationEntry>[];
                     return ListView(
                       padding: const EdgeInsets.fromLTRB(kScreenPadding, 12, kScreenPadding, 18),
                       children: [
@@ -4420,6 +4566,8 @@ class DonationHistoryScreen extends StatelessWidget {
                             ),
                           ),
                         ),
+                        const SizedBox(height: 16),
+                        const FooterCredit(),
                       ],
                     );
                   },
@@ -4465,6 +4613,8 @@ class FormShell extends StatelessWidget {
                     children: children,
                   ),
                 ),
+                const SizedBox(height: 16),
+                const FooterCredit(),
               ],
             ),
           ),
@@ -4556,12 +4706,52 @@ class EmptyStateCard extends StatelessWidget {
   }
 }
 
+class FooterCredit extends StatelessWidget {
+  const FooterCredit({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: GestureDetector(
+        onTap: () => openNillFacebook(context),
+        child: Column(
+          children: [
+            Text(
+              'Developed by',
+              style: captionStyle(),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Zahurul Haque Nill',
+              style: poppins(
+                size: 12,
+                weight: FontWeight.w700,
+                color: kRed,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 Future<void> callPhone(String phone, BuildContext context) async {
   final uri = Uri.parse('tel:$phone');
   final opened = await launchUrl(uri);
   if (!opened && context.mounted) {
     ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text('à¦•à¦² à¦•à¦°à¦¾ à¦¯à¦¾à¦¯à¦¼à¦¨à¦¿')));
+        .showSnackBar(const SnackBar(content: Text('কল করা যায়নি')));
+  }
+}
+
+Future<void> openNillFacebook(BuildContext context) async {
+  final uri = Uri.parse(kNillFacebookUrl);
+  final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+  if (!opened && context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('ফেসবুক লিংক খোলা যায়নি')),
+    );
   }
 }
 
