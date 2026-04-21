@@ -2,6 +2,7 @@ create table if not exists public.organizations (
   id uuid primary key default gen_random_uuid(),
   name text not null unique,
   slug text not null unique,
+  logo_url text,
   description text not null,
   division text not null,
   district text not null,
@@ -12,6 +13,9 @@ create table if not exists public.organizations (
   created_at timestamptz not null default timezone('utc', now()),
   updated_at timestamptz not null default timezone('utc', now())
 );
+
+alter table public.organizations
+add column if not exists logo_url text;
 
 alter table public.users
 add column if not exists organization_id uuid references public.organizations(id) on delete set null;
